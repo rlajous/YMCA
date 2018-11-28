@@ -1,13 +1,9 @@
 %{
-//aca va codigo C que queremos que se incluya
-//en el output (headers por ejemplo)
-
 #include <stdio.h>
-#include "y.tab.h" /* token codes from the parser */
+#include "y.tab.h"
 %}
 
 %%
-
 ";"                     {return SEMICOLON;}
 ":"                     {return COLON;}
 ","                     {return COMMA;}
@@ -47,7 +43,6 @@
 
 "true"                  {yylval.value = 1; return BOOLEAN;}
 "false"                 {yylval.value = 0; return BOOLEAN;}
-
 [0-9]+					{yylval.value = atoi(yytext);
 						return INTEGER;}
 

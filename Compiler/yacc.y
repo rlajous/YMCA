@@ -1,10 +1,48 @@
 %{
-#include <stdio.h>
-/*extern void yyerror(char *);*/
+#include<stdio.h>
+
+int regs[26];
+int base;
+
+extern int yylex();
+
 %}
 
-%start sentence
+%start list //Program
 
+%union {
+  	int a;
+    char * text;
+  	int value;
+
+  	// program_node* program_node;
+  	// defines_node* defines_node;
+  	// define_node* define_node;
+  	// functions_node* functions_node;
+  	// function_node* function_node;
+  	// type_node * type_node;
+  	// parameters_node* parameters_node;
+  	// sentences_node* sentences_node;
+  	// sentence_node* sentence_node;
+  	// declaration_node * declaration_node;
+  	// variable_opration_node* variable_opration_node;
+  	// assignment_node* assignment_node;
+  	// queue_stack_node* queue_stack_node;
+  	// elements_node* elements_node;
+  	// element_node* element_node;
+  	// if_node* if_node;
+  	// while_node* while_node;
+  	// for_node* for_node;
+  	// condition_node* condition_node;
+  	// expression_node* expression_node;
+  	// function_execute_node* function_execute_node;
+  	// call_parameters_node* call_parameters_node;
+  	// call_parameter_node* call_parameter_node;
+  	// return_node* return_node;
+  }
+
+
+%token DIGIT LETTER SEMICOLON
 %token SEMICOLON COLON COMMA OPEN_CURLY_BRACES CLOSE_CURLY_BRACES LESS_THAN GREATER_THAN 
 %token OPEN_PARENTHESES CLOSE_PARENTHESES OPEN_BRACKET CLOSE_BRACKET PLUS MINUS MULTIPLY DIVIDE MOD
 %token EQUAL NOT_EQUAL GREATER_OR_EQUAL LESS_OR_EQUAL
@@ -13,14 +51,44 @@
 
 %token BOOLEAN_TYPE INTEGER_TYPE STRING_TYPE
 
-%token MAIN BOOLEAN INTEGER NAME STRING 
- 
+%token MAIN BOOLEAN NAME STRING
 
-%%
- /* Las producciones (o "reglas") de la gramatica
-  * que describe nuestro lenguaje
-  */
+%token <value> BOOLEAN
+%token <value> INTEGER
+%token <text> NAME
+%token <text> STRING
 
+
+  // %type <program_node> Program
+  // %type <defines_node> Defines
+  // %type <define_node> Define
+  // %type <functions_node> Functions
+  // %type <function_node> Function Main
+  // %type <type_node> Type CompoundType
+  // %type <parameters_node> Arguments Parameters
+  // %type <sentences_node> Block Sentences
+  // %type <sentence_node> Sentence
+  // %type <text> SentenceEnd AssignmentOperation LogicalOperation Increment Decrement
+  // %type <declaration_node> Declaration
+  // %type <variable_opration_node> VariableOperation
+  // %type <assignment_node> Assignment
+  // %type <elements_node> ElementList Elements
+  // %type <element_node> Element
+  // %type <if_node> If Else
+  // %type <while_node> While
+  // %type <for_node> For
+  // %type <condition_node> Condition
+  // %type <expression_node> Expression
+  // %type <function_execute_node> FunctionExecute
+  // %type <call_parameters_node> CallArguments CallParameters
+  // %type <call_parameter_node> CallParameter
+  // %type <return_node> Return
+
+%%                   /* beginning of rules section */
+
+list: ;/*Placeholder. Only accepting spaces with this rule*/
+
+ /*
 program: defines functions {}
 	;
 
@@ -138,13 +206,21 @@ expresion: BOOLEAN {}
 	| expresion DIVIDE expresion {}
 	| expresion MULTIPLY expresion {}
 	;
+  */
 
 %%
+int main()
+{
+ return(yyparse());
+}
 
+void yyerror(s)
+char *s;
+{
   fprintf(stderr, "%s\n",s);
 }
 
-yywrap()
+int yywrap()
 {
   return(1);
 }
