@@ -23,7 +23,7 @@
 "="                     {return EQUAL;}
 "!="                    {return NOT_EQUAL;}
 ">="                    {return GREATER_OR_EQUAL;}
-"<="                    { return LESS_OR_EQUAL;}
+"<="                    {return LESS_OR_EQUAL;}
 
 "||"                    {return OR;}
 "&&"                    {return AND;}

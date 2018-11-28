@@ -907,7 +907,7 @@ YY_RULE_SETUP
 case 20:
 YY_RULE_SETUP
 #line 26 "lex.l"
-{ return LESS_OR_EQUAL;}
+{return LESS_OR_EQUAL;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP

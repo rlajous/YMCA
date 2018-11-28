@@ -1,21 +1,1703 @@
-   0  $accept : list $end
+   0  $accept : program $end
 
-   1  list :
+   1  program : defines functions
+
+   2  defines : define defines
+   3          | define
+
+   4  define : DEFINE NAME BOOLEAN
+   5         | DEFINE NAME INTEGER
+   6         | DEFINE NAME STRING
+
+   7  functions : function functions
+   8            | main
+
+   9  function : type NAME OPEN_PARENTHESES args CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES
+
+  10  main : type MAIN OPEN_PARENTHESES CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES
+
+  11  type : INTEGER_TYPE
+  12       | BOOLEAN_TYPE
+  13       | STRING_TYPE
+
+  14  args : params
+  15       |
+
+  16  params : param COMMA params
+  17         | param
+
+  18  param : type NAME
+
+  19  body : sentences
+  20       |
+
+  21  sentences : sentence sentences
+  22            | sentence
+
+  23  sentence : declaration SEMICOLON
+  24           | for
+  25           | while
+  26           | if
+  27           | var_operation SEMICOLON
+  28           | func_call SEMICOLON
+  29           | return SEMICOLON
+
+  30  for : FOR OPEN_PARENTHESES var_operation SEMICOLON condition SEMICOLON var_operation CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES
+
+  31  while : WHILE OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES
+
+  32  if : IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES
+  33     | IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES ELSE OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES
+
+  34  declaration : type NAME
+  35              | type assignment
+
+  36  var_operation : assignment
+  37                | NAME PLUS PLUS
+  38                | NAME MINUS MINUS
+
+  39  func_call : NAME OPEN_PARENTHESES call_args CLOSE_PARENTHESES
+
+  40  call_args :
+  41            | call_params
+
+  42  call_params : call_param COMMA call_params
+  43              | call_param
+
+  44  call_param : expresion
+  45             | STRING
+
+  46  return : RETURN expresion
+
+  47  condition : BOOLEAN
+  48            | OPEN_PARENTHESES condition CLOSE_PARENTHESES
+  49            | expresion EQUAL EQUAL expresion
+  50            | expresion NOT_EQUAL expresion
+  51            | expresion GREATER_THAN expresion
+  52            | expresion LESS_THAN expresion
+  53            | expresion GREATER_OR_EQUAL expresion
+  54            | expresion LESS_OR_EQUAL expresion
+  55            | condition OR condition
+  56            | condition AND condition
+
+  57  assignment : NAME EQUAL expresion
+  58             | NAME EQUAL STRING
+
+  59  expresion : BOOLEAN
+  60            | NAME
+  61            | INTEGER
+  62            | func_call
+  63            | expresion PLUS expresion
+  64            | expresion MINUS expresion
+  65            | expresion MOD expresion
+  66            | expresion DIVIDE expresion
+  67            | expresion MULTIPLY expresion
 
 state 0
-	$accept : . list $end  (0)
-	list : .  (1)
+	$accept : . program $end  (0)
 
-	.  reduce 1
+	DEFINE  shift 1
+	.  error
 
-	list  goto 1
+	program  goto 2
+	defines  goto 3
+	define  goto 4
 
 
 state 1
-	$accept : list . $end  (0)
+	define : DEFINE . NAME BOOLEAN  (4)
+	define : DEFINE . NAME INTEGER  (5)
+	define : DEFINE . NAME STRING  (6)
+
+	NAME  shift 5
+	.  error
+
+
+state 2
+	$accept : program . $end  (0)
 
 	$end  accept
 
 
-40 terminals, 2 nonterminals
-2 grammar rules, 2 states
+state 3
+	program : defines . functions  (1)
+
+	BOOLEAN_TYPE  shift 6
+	INTEGER_TYPE  shift 7
+	STRING_TYPE  shift 8
+	.  error
+
+	functions  goto 9
+	function  goto 10
+	main  goto 11
+	type  goto 12
+
+
+state 4
+	defines : define . defines  (2)
+	defines : define .  (3)
+
+	DEFINE  shift 1
+	BOOLEAN_TYPE  reduce 3
+	INTEGER_TYPE  reduce 3
+	STRING_TYPE  reduce 3
+
+	defines  goto 13
+	define  goto 4
+
+
+state 5
+	define : DEFINE NAME . BOOLEAN  (4)
+	define : DEFINE NAME . INTEGER  (5)
+	define : DEFINE NAME . STRING  (6)
+
+	BOOLEAN  shift 14
+	STRING  shift 15
+	INTEGER  shift 16
+	.  error
+
+
+state 6
+	type : BOOLEAN_TYPE .  (12)
+
+	.  reduce 12
+
+
+state 7
+	type : INTEGER_TYPE .  (11)
+
+	.  reduce 11
+
+
+state 8
+	type : STRING_TYPE .  (13)
+
+	.  reduce 13
+
+
+state 9
+	program : defines functions .  (1)
+
+	.  reduce 1
+
+
+state 10
+	functions : function . functions  (7)
+
+	BOOLEAN_TYPE  shift 6
+	INTEGER_TYPE  shift 7
+	STRING_TYPE  shift 8
+	.  error
+
+	functions  goto 17
+	function  goto 10
+	main  goto 11
+	type  goto 12
+
+
+state 11
+	functions : main .  (8)
+
+	.  reduce 8
+
+
+state 12
+	function : type . NAME OPEN_PARENTHESES args CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (9)
+	main : type . MAIN OPEN_PARENTHESES CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (10)
+
+	MAIN  shift 18
+	NAME  shift 19
+	.  error
+
+
+state 13
+	defines : define defines .  (2)
+
+	.  reduce 2
+
+
+state 14
+	define : DEFINE NAME BOOLEAN .  (4)
+
+	.  reduce 4
+
+
+state 15
+	define : DEFINE NAME STRING .  (6)
+
+	.  reduce 6
+
+
+state 16
+	define : DEFINE NAME INTEGER .  (5)
+
+	.  reduce 5
+
+
+state 17
+	functions : function functions .  (7)
+
+	.  reduce 7
+
+
+state 18
+	main : type MAIN . OPEN_PARENTHESES CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (10)
+
+	OPEN_PARENTHESES  shift 20
+	.  error
+
+
+state 19
+	function : type NAME . OPEN_PARENTHESES args CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (9)
+
+	OPEN_PARENTHESES  shift 21
+	.  error
+
+
+state 20
+	main : type MAIN OPEN_PARENTHESES . CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (10)
+
+	CLOSE_PARENTHESES  shift 22
+	.  error
+
+
+state 21
+	function : type NAME OPEN_PARENTHESES . args CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (9)
+	args : .  (15)
+
+	BOOLEAN_TYPE  shift 6
+	INTEGER_TYPE  shift 7
+	STRING_TYPE  shift 8
+	CLOSE_PARENTHESES  reduce 15
+
+	type  goto 23
+	args  goto 24
+	params  goto 25
+	param  goto 26
+
+
+state 22
+	main : type MAIN OPEN_PARENTHESES CLOSE_PARENTHESES . OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (10)
+
+	OPEN_CURLY_BRACES  shift 27
+	.  error
+
+
+state 23
+	param : type . NAME  (18)
+
+	NAME  shift 28
+	.  error
+
+
+state 24
+	function : type NAME OPEN_PARENTHESES args . CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (9)
+
+	CLOSE_PARENTHESES  shift 29
+	.  error
+
+
+state 25
+	args : params .  (14)
+
+	.  reduce 14
+
+
+state 26
+	params : param . COMMA params  (16)
+	params : param .  (17)
+
+	COMMA  shift 30
+	CLOSE_PARENTHESES  reduce 17
+
+
+state 27
+	main : type MAIN OPEN_PARENTHESES CLOSE_PARENTHESES OPEN_CURLY_BRACES . body CLOSE_CURLY_BRACES  (10)
+	body : .  (20)
+
+	RETURN  shift 31
+	FOR  shift 32
+	WHILE  shift 33
+	IF  shift 34
+	BOOLEAN_TYPE  shift 6
+	INTEGER_TYPE  shift 7
+	STRING_TYPE  shift 8
+	NAME  shift 35
+	CLOSE_CURLY_BRACES  reduce 20
+
+	type  goto 36
+	body  goto 37
+	sentences  goto 38
+	sentence  goto 39
+	declaration  goto 40
+	for  goto 41
+	while  goto 42
+	if  goto 43
+	var_operation  goto 44
+	func_call  goto 45
+	return  goto 46
+	assignment  goto 47
+
+
+state 28
+	param : type NAME .  (18)
+
+	.  reduce 18
+
+
+state 29
+	function : type NAME OPEN_PARENTHESES args CLOSE_PARENTHESES . OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (9)
+
+	OPEN_CURLY_BRACES  shift 48
+	.  error
+
+
+state 30
+	params : param COMMA . params  (16)
+
+	BOOLEAN_TYPE  shift 6
+	INTEGER_TYPE  shift 7
+	STRING_TYPE  shift 8
+	.  error
+
+	type  goto 23
+	params  goto 49
+	param  goto 26
+
+
+state 31
+	return : RETURN . expresion  (46)
+
+	BOOLEAN  shift 50
+	NAME  shift 51
+	INTEGER  shift 52
+	.  error
+
+	func_call  goto 53
+	expresion  goto 54
+
+
+state 32
+	for : FOR . OPEN_PARENTHESES var_operation SEMICOLON condition SEMICOLON var_operation CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (30)
+
+	OPEN_PARENTHESES  shift 55
+	.  error
+
+
+state 33
+	while : WHILE . OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (31)
+
+	OPEN_PARENTHESES  shift 56
+	.  error
+
+
+state 34
+	if : IF . OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (32)
+	if : IF . OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES ELSE OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (33)
+
+	OPEN_PARENTHESES  shift 57
+	.  error
+
+
+state 35
+	var_operation : NAME . PLUS PLUS  (37)
+	var_operation : NAME . MINUS MINUS  (38)
+	func_call : NAME . OPEN_PARENTHESES call_args CLOSE_PARENTHESES  (39)
+	assignment : NAME . EQUAL expresion  (57)
+	assignment : NAME . EQUAL STRING  (58)
+
+	OPEN_PARENTHESES  shift 58
+	PLUS  shift 59
+	MINUS  shift 60
+	EQUAL  shift 61
+	.  error
+
+
+state 36
+	declaration : type . NAME  (34)
+	declaration : type . assignment  (35)
+
+	NAME  shift 62
+	.  error
+
+	assignment  goto 63
+
+
+state 37
+	main : type MAIN OPEN_PARENTHESES CLOSE_PARENTHESES OPEN_CURLY_BRACES body . CLOSE_CURLY_BRACES  (10)
+
+	CLOSE_CURLY_BRACES  shift 64
+	.  error
+
+
+state 38
+	body : sentences .  (19)
+
+	.  reduce 19
+
+
+state 39
+	sentences : sentence . sentences  (21)
+	sentences : sentence .  (22)
+
+	RETURN  shift 31
+	FOR  shift 32
+	WHILE  shift 33
+	IF  shift 34
+	BOOLEAN_TYPE  shift 6
+	INTEGER_TYPE  shift 7
+	STRING_TYPE  shift 8
+	NAME  shift 35
+	CLOSE_CURLY_BRACES  reduce 22
+
+	type  goto 36
+	sentences  goto 65
+	sentence  goto 39
+	declaration  goto 40
+	for  goto 41
+	while  goto 42
+	if  goto 43
+	var_operation  goto 44
+	func_call  goto 45
+	return  goto 46
+	assignment  goto 47
+
+
+state 40
+	sentence : declaration . SEMICOLON  (23)
+
+	SEMICOLON  shift 66
+	.  error
+
+
+state 41
+	sentence : for .  (24)
+
+	.  reduce 24
+
+
+state 42
+	sentence : while .  (25)
+
+	.  reduce 25
+
+
+state 43
+	sentence : if .  (26)
+
+	.  reduce 26
+
+
+state 44
+	sentence : var_operation . SEMICOLON  (27)
+
+	SEMICOLON  shift 67
+	.  error
+
+
+state 45
+	sentence : func_call . SEMICOLON  (28)
+
+	SEMICOLON  shift 68
+	.  error
+
+
+state 46
+	sentence : return . SEMICOLON  (29)
+
+	SEMICOLON  shift 69
+	.  error
+
+
+state 47
+	var_operation : assignment .  (36)
+
+	.  reduce 36
+
+
+state 48
+	function : type NAME OPEN_PARENTHESES args CLOSE_PARENTHESES OPEN_CURLY_BRACES . body CLOSE_CURLY_BRACES  (9)
+	body : .  (20)
+
+	RETURN  shift 31
+	FOR  shift 32
+	WHILE  shift 33
+	IF  shift 34
+	BOOLEAN_TYPE  shift 6
+	INTEGER_TYPE  shift 7
+	STRING_TYPE  shift 8
+	NAME  shift 35
+	CLOSE_CURLY_BRACES  reduce 20
+
+	type  goto 36
+	body  goto 70
+	sentences  goto 38
+	sentence  goto 39
+	declaration  goto 40
+	for  goto 41
+	while  goto 42
+	if  goto 43
+	var_operation  goto 44
+	func_call  goto 45
+	return  goto 46
+	assignment  goto 47
+
+
+state 49
+	params : param COMMA params .  (16)
+
+	.  reduce 16
+
+
+state 50
+	expresion : BOOLEAN .  (59)
+
+	.  reduce 59
+
+
+state 51
+	func_call : NAME . OPEN_PARENTHESES call_args CLOSE_PARENTHESES  (39)
+	expresion : NAME .  (60)
+
+	OPEN_PARENTHESES  shift 58
+	SEMICOLON  reduce 60
+	COMMA  reduce 60
+	LESS_THAN  reduce 60
+	GREATER_THAN  reduce 60
+	CLOSE_PARENTHESES  reduce 60
+	PLUS  reduce 60
+	MINUS  reduce 60
+	MULTIPLY  reduce 60
+	DIVIDE  reduce 60
+	MOD  reduce 60
+	EQUAL  reduce 60
+	NOT_EQUAL  reduce 60
+	GREATER_OR_EQUAL  reduce 60
+	LESS_OR_EQUAL  reduce 60
+	AND  reduce 60
+	OR  reduce 60
+
+
+state 52
+	expresion : INTEGER .  (61)
+
+	.  reduce 61
+
+
+state 53
+	expresion : func_call .  (62)
+
+	.  reduce 62
+
+
+state 54
+	return : RETURN expresion .  (46)
+	expresion : expresion . PLUS expresion  (63)
+	expresion : expresion . MINUS expresion  (64)
+	expresion : expresion . MOD expresion  (65)
+	expresion : expresion . DIVIDE expresion  (66)
+	expresion : expresion . MULTIPLY expresion  (67)
+
+	PLUS  shift 71
+	MINUS  shift 72
+	MULTIPLY  shift 73
+	DIVIDE  shift 74
+	MOD  shift 75
+	SEMICOLON  reduce 46
+
+
+state 55
+	for : FOR OPEN_PARENTHESES . var_operation SEMICOLON condition SEMICOLON var_operation CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (30)
+
+	NAME  shift 76
+	.  error
+
+	var_operation  goto 77
+	assignment  goto 47
+
+
+state 56
+	while : WHILE OPEN_PARENTHESES . condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (31)
+
+	OPEN_PARENTHESES  shift 78
+	BOOLEAN  shift 79
+	NAME  shift 51
+	INTEGER  shift 52
+	.  error
+
+	func_call  goto 53
+	condition  goto 80
+	expresion  goto 81
+
+
+state 57
+	if : IF OPEN_PARENTHESES . condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (32)
+	if : IF OPEN_PARENTHESES . condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES ELSE OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (33)
+
+	OPEN_PARENTHESES  shift 78
+	BOOLEAN  shift 79
+	NAME  shift 51
+	INTEGER  shift 52
+	.  error
+
+	func_call  goto 53
+	condition  goto 82
+	expresion  goto 81
+
+
+state 58
+	func_call : NAME OPEN_PARENTHESES . call_args CLOSE_PARENTHESES  (39)
+	call_args : .  (40)
+
+	BOOLEAN  shift 50
+	NAME  shift 51
+	STRING  shift 83
+	INTEGER  shift 52
+	CLOSE_PARENTHESES  reduce 40
+
+	func_call  goto 53
+	call_args  goto 84
+	call_params  goto 85
+	call_param  goto 86
+	expresion  goto 87
+
+
+state 59
+	var_operation : NAME PLUS . PLUS  (37)
+
+	PLUS  shift 88
+	.  error
+
+
+state 60
+	var_operation : NAME MINUS . MINUS  (38)
+
+	MINUS  shift 89
+	.  error
+
+
+state 61
+	assignment : NAME EQUAL . expresion  (57)
+	assignment : NAME EQUAL . STRING  (58)
+
+	BOOLEAN  shift 50
+	NAME  shift 51
+	STRING  shift 90
+	INTEGER  shift 52
+	.  error
+
+	func_call  goto 53
+	expresion  goto 91
+
+
+state 62
+	declaration : type NAME .  (34)
+	assignment : NAME . EQUAL expresion  (57)
+	assignment : NAME . EQUAL STRING  (58)
+
+	EQUAL  shift 61
+	SEMICOLON  reduce 34
+
+
+state 63
+	declaration : type assignment .  (35)
+
+	.  reduce 35
+
+
+state 64
+	main : type MAIN OPEN_PARENTHESES CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES .  (10)
+
+	.  reduce 10
+
+
+state 65
+	sentences : sentence sentences .  (21)
+
+	.  reduce 21
+
+
+state 66
+	sentence : declaration SEMICOLON .  (23)
+
+	.  reduce 23
+
+
+state 67
+	sentence : var_operation SEMICOLON .  (27)
+
+	.  reduce 27
+
+
+state 68
+	sentence : func_call SEMICOLON .  (28)
+
+	.  reduce 28
+
+
+state 69
+	sentence : return SEMICOLON .  (29)
+
+	.  reduce 29
+
+
+state 70
+	function : type NAME OPEN_PARENTHESES args CLOSE_PARENTHESES OPEN_CURLY_BRACES body . CLOSE_CURLY_BRACES  (9)
+
+	CLOSE_CURLY_BRACES  shift 92
+	.  error
+
+
+state 71
+	expresion : expresion PLUS . expresion  (63)
+
+	BOOLEAN  shift 50
+	NAME  shift 51
+	INTEGER  shift 52
+	.  error
+
+	func_call  goto 53
+	expresion  goto 93
+
+
+state 72
+	expresion : expresion MINUS . expresion  (64)
+
+	BOOLEAN  shift 50
+	NAME  shift 51
+	INTEGER  shift 52
+	.  error
+
+	func_call  goto 53
+	expresion  goto 94
+
+
+state 73
+	expresion : expresion MULTIPLY . expresion  (67)
+
+	BOOLEAN  shift 50
+	NAME  shift 51
+	INTEGER  shift 52
+	.  error
+
+	func_call  goto 53
+	expresion  goto 95
+
+
+state 74
+	expresion : expresion DIVIDE . expresion  (66)
+
+	BOOLEAN  shift 50
+	NAME  shift 51
+	INTEGER  shift 52
+	.  error
+
+	func_call  goto 53
+	expresion  goto 96
+
+
+state 75
+	expresion : expresion MOD . expresion  (65)
+
+	BOOLEAN  shift 50
+	NAME  shift 51
+	INTEGER  shift 52
+	.  error
+
+	func_call  goto 53
+	expresion  goto 97
+
+
+state 76
+	var_operation : NAME . PLUS PLUS  (37)
+	var_operation : NAME . MINUS MINUS  (38)
+	assignment : NAME . EQUAL expresion  (57)
+	assignment : NAME . EQUAL STRING  (58)
+
+	PLUS  shift 59
+	MINUS  shift 60
+	EQUAL  shift 61
+	.  error
+
+
+state 77
+	for : FOR OPEN_PARENTHESES var_operation . SEMICOLON condition SEMICOLON var_operation CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (30)
+
+	SEMICOLON  shift 98
+	.  error
+
+
+state 78
+	condition : OPEN_PARENTHESES . condition CLOSE_PARENTHESES  (48)
+
+	OPEN_PARENTHESES  shift 78
+	BOOLEAN  shift 79
+	NAME  shift 51
+	INTEGER  shift 52
+	.  error
+
+	func_call  goto 53
+	condition  goto 99
+	expresion  goto 81
+
+
+state 79
+	condition : BOOLEAN .  (47)
+	expresion : BOOLEAN .  (59)
+
+	SEMICOLON  reduce 47
+	LESS_THAN  reduce 59
+	GREATER_THAN  reduce 59
+	CLOSE_PARENTHESES  reduce 47
+	PLUS  reduce 59
+	MINUS  reduce 59
+	MULTIPLY  reduce 59
+	DIVIDE  reduce 59
+	MOD  reduce 59
+	EQUAL  reduce 59
+	NOT_EQUAL  reduce 59
+	GREATER_OR_EQUAL  reduce 59
+	LESS_OR_EQUAL  reduce 59
+	AND  reduce 47
+	OR  reduce 47
+
+
+state 80
+	while : WHILE OPEN_PARENTHESES condition . CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (31)
+	condition : condition . OR condition  (55)
+	condition : condition . AND condition  (56)
+
+	CLOSE_PARENTHESES  shift 100
+	AND  shift 101
+	OR  shift 102
+	.  error
+
+
+state 81
+	condition : expresion . EQUAL EQUAL expresion  (49)
+	condition : expresion . NOT_EQUAL expresion  (50)
+	condition : expresion . GREATER_THAN expresion  (51)
+	condition : expresion . LESS_THAN expresion  (52)
+	condition : expresion . GREATER_OR_EQUAL expresion  (53)
+	condition : expresion . LESS_OR_EQUAL expresion  (54)
+	expresion : expresion . PLUS expresion  (63)
+	expresion : expresion . MINUS expresion  (64)
+	expresion : expresion . MOD expresion  (65)
+	expresion : expresion . DIVIDE expresion  (66)
+	expresion : expresion . MULTIPLY expresion  (67)
+
+	LESS_THAN  shift 103
+	GREATER_THAN  shift 104
+	PLUS  shift 71
+	MINUS  shift 72
+	MULTIPLY  shift 73
+	DIVIDE  shift 74
+	MOD  shift 75
+	EQUAL  shift 105
+	NOT_EQUAL  shift 106
+	GREATER_OR_EQUAL  shift 107
+	LESS_OR_EQUAL  shift 108
+	.  error
+
+
+state 82
+	if : IF OPEN_PARENTHESES condition . CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (32)
+	if : IF OPEN_PARENTHESES condition . CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES ELSE OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (33)
+	condition : condition . OR condition  (55)
+	condition : condition . AND condition  (56)
+
+	CLOSE_PARENTHESES  shift 109
+	AND  shift 101
+	OR  shift 102
+	.  error
+
+
+state 83
+	call_param : STRING .  (45)
+
+	.  reduce 45
+
+
+state 84
+	func_call : NAME OPEN_PARENTHESES call_args . CLOSE_PARENTHESES  (39)
+
+	CLOSE_PARENTHESES  shift 110
+	.  error
+
+
+state 85
+	call_args : call_params .  (41)
+
+	.  reduce 41
+
+
+state 86
+	call_params : call_param . COMMA call_params  (42)
+	call_params : call_param .  (43)
+
+	COMMA  shift 111
+	CLOSE_PARENTHESES  reduce 43
+
+
+state 87
+	call_param : expresion .  (44)
+	expresion : expresion . PLUS expresion  (63)
+	expresion : expresion . MINUS expresion  (64)
+	expresion : expresion . MOD expresion  (65)
+	expresion : expresion . DIVIDE expresion  (66)
+	expresion : expresion . MULTIPLY expresion  (67)
+
+	PLUS  shift 71
+	MINUS  shift 72
+	MULTIPLY  shift 73
+	DIVIDE  shift 74
+	MOD  shift 75
+	COMMA  reduce 44
+	CLOSE_PARENTHESES  reduce 44
+
+
+state 88
+	var_operation : NAME PLUS PLUS .  (37)
+
+	.  reduce 37
+
+
+state 89
+	var_operation : NAME MINUS MINUS .  (38)
+
+	.  reduce 38
+
+
+state 90
+	assignment : NAME EQUAL STRING .  (58)
+
+	.  reduce 58
+
+
+state 91
+	assignment : NAME EQUAL expresion .  (57)
+	expresion : expresion . PLUS expresion  (63)
+	expresion : expresion . MINUS expresion  (64)
+	expresion : expresion . MOD expresion  (65)
+	expresion : expresion . DIVIDE expresion  (66)
+	expresion : expresion . MULTIPLY expresion  (67)
+
+	PLUS  shift 71
+	MINUS  shift 72
+	MULTIPLY  shift 73
+	DIVIDE  shift 74
+	MOD  shift 75
+	SEMICOLON  reduce 57
+	CLOSE_PARENTHESES  reduce 57
+
+
+state 92
+	function : type NAME OPEN_PARENTHESES args CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES .  (9)
+
+	.  reduce 9
+
+
+93: shift/reduce conflict (shift 71, reduce 63) on PLUS
+93: shift/reduce conflict (shift 72, reduce 63) on MINUS
+93: shift/reduce conflict (shift 73, reduce 63) on MULTIPLY
+93: shift/reduce conflict (shift 74, reduce 63) on DIVIDE
+93: shift/reduce conflict (shift 75, reduce 63) on MOD
+state 93
+	expresion : expresion . PLUS expresion  (63)
+	expresion : expresion PLUS expresion .  (63)
+	expresion : expresion . MINUS expresion  (64)
+	expresion : expresion . MOD expresion  (65)
+	expresion : expresion . DIVIDE expresion  (66)
+	expresion : expresion . MULTIPLY expresion  (67)
+
+	PLUS  shift 71
+	MINUS  shift 72
+	MULTIPLY  shift 73
+	DIVIDE  shift 74
+	MOD  shift 75
+	SEMICOLON  reduce 63
+	COMMA  reduce 63
+	LESS_THAN  reduce 63
+	GREATER_THAN  reduce 63
+	CLOSE_PARENTHESES  reduce 63
+	EQUAL  reduce 63
+	NOT_EQUAL  reduce 63
+	GREATER_OR_EQUAL  reduce 63
+	LESS_OR_EQUAL  reduce 63
+	AND  reduce 63
+	OR  reduce 63
+
+
+94: shift/reduce conflict (shift 71, reduce 64) on PLUS
+94: shift/reduce conflict (shift 72, reduce 64) on MINUS
+94: shift/reduce conflict (shift 73, reduce 64) on MULTIPLY
+94: shift/reduce conflict (shift 74, reduce 64) on DIVIDE
+94: shift/reduce conflict (shift 75, reduce 64) on MOD
+state 94
+	expresion : expresion . PLUS expresion  (63)
+	expresion : expresion . MINUS expresion  (64)
+	expresion : expresion MINUS expresion .  (64)
+	expresion : expresion . MOD expresion  (65)
+	expresion : expresion . DIVIDE expresion  (66)
+	expresion : expresion . MULTIPLY expresion  (67)
+
+	PLUS  shift 71
+	MINUS  shift 72
+	MULTIPLY  shift 73
+	DIVIDE  shift 74
+	MOD  shift 75
+	SEMICOLON  reduce 64
+	COMMA  reduce 64
+	LESS_THAN  reduce 64
+	GREATER_THAN  reduce 64
+	CLOSE_PARENTHESES  reduce 64
+	EQUAL  reduce 64
+	NOT_EQUAL  reduce 64
+	GREATER_OR_EQUAL  reduce 64
+	LESS_OR_EQUAL  reduce 64
+	AND  reduce 64
+	OR  reduce 64
+
+
+95: shift/reduce conflict (shift 71, reduce 67) on PLUS
+95: shift/reduce conflict (shift 72, reduce 67) on MINUS
+95: shift/reduce conflict (shift 73, reduce 67) on MULTIPLY
+95: shift/reduce conflict (shift 74, reduce 67) on DIVIDE
+95: shift/reduce conflict (shift 75, reduce 67) on MOD
+state 95
+	expresion : expresion . PLUS expresion  (63)
+	expresion : expresion . MINUS expresion  (64)
+	expresion : expresion . MOD expresion  (65)
+	expresion : expresion . DIVIDE expresion  (66)
+	expresion : expresion . MULTIPLY expresion  (67)
+	expresion : expresion MULTIPLY expresion .  (67)
+
+	PLUS  shift 71
+	MINUS  shift 72
+	MULTIPLY  shift 73
+	DIVIDE  shift 74
+	MOD  shift 75
+	SEMICOLON  reduce 67
+	COMMA  reduce 67
+	LESS_THAN  reduce 67
+	GREATER_THAN  reduce 67
+	CLOSE_PARENTHESES  reduce 67
+	EQUAL  reduce 67
+	NOT_EQUAL  reduce 67
+	GREATER_OR_EQUAL  reduce 67
+	LESS_OR_EQUAL  reduce 67
+	AND  reduce 67
+	OR  reduce 67
+
+
+96: shift/reduce conflict (shift 71, reduce 66) on PLUS
+96: shift/reduce conflict (shift 72, reduce 66) on MINUS
+96: shift/reduce conflict (shift 73, reduce 66) on MULTIPLY
+96: shift/reduce conflict (shift 74, reduce 66) on DIVIDE
+96: shift/reduce conflict (shift 75, reduce 66) on MOD
+state 96
+	expresion : expresion . PLUS expresion  (63)
+	expresion : expresion . MINUS expresion  (64)
+	expresion : expresion . MOD expresion  (65)
+	expresion : expresion . DIVIDE expresion  (66)
+	expresion : expresion DIVIDE expresion .  (66)
+	expresion : expresion . MULTIPLY expresion  (67)
+
+	PLUS  shift 71
+	MINUS  shift 72
+	MULTIPLY  shift 73
+	DIVIDE  shift 74
+	MOD  shift 75
+	SEMICOLON  reduce 66
+	COMMA  reduce 66
+	LESS_THAN  reduce 66
+	GREATER_THAN  reduce 66
+	CLOSE_PARENTHESES  reduce 66
+	EQUAL  reduce 66
+	NOT_EQUAL  reduce 66
+	GREATER_OR_EQUAL  reduce 66
+	LESS_OR_EQUAL  reduce 66
+	AND  reduce 66
+	OR  reduce 66
+
+
+97: shift/reduce conflict (shift 71, reduce 65) on PLUS
+97: shift/reduce conflict (shift 72, reduce 65) on MINUS
+97: shift/reduce conflict (shift 73, reduce 65) on MULTIPLY
+97: shift/reduce conflict (shift 74, reduce 65) on DIVIDE
+97: shift/reduce conflict (shift 75, reduce 65) on MOD
+state 97
+	expresion : expresion . PLUS expresion  (63)
+	expresion : expresion . MINUS expresion  (64)
+	expresion : expresion . MOD expresion  (65)
+	expresion : expresion MOD expresion .  (65)
+	expresion : expresion . DIVIDE expresion  (66)
+	expresion : expresion . MULTIPLY expresion  (67)
+
+	PLUS  shift 71
+	MINUS  shift 72
+	MULTIPLY  shift 73
+	DIVIDE  shift 74
+	MOD  shift 75
+	SEMICOLON  reduce 65
+	COMMA  reduce 65
+	LESS_THAN  reduce 65
+	GREATER_THAN  reduce 65
+	CLOSE_PARENTHESES  reduce 65
+	EQUAL  reduce 65
+	NOT_EQUAL  reduce 65
+	GREATER_OR_EQUAL  reduce 65
+	LESS_OR_EQUAL  reduce 65
+	AND  reduce 65
+	OR  reduce 65
+
+
+state 98
+	for : FOR OPEN_PARENTHESES var_operation SEMICOLON . condition SEMICOLON var_operation CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (30)
+
+	OPEN_PARENTHESES  shift 78
+	BOOLEAN  shift 79
+	NAME  shift 51
+	INTEGER  shift 52
+	.  error
+
+	func_call  goto 53
+	condition  goto 112
+	expresion  goto 81
+
+
+state 99
+	condition : OPEN_PARENTHESES condition . CLOSE_PARENTHESES  (48)
+	condition : condition . OR condition  (55)
+	condition : condition . AND condition  (56)
+
+	CLOSE_PARENTHESES  shift 113
+	AND  shift 101
+	OR  shift 102
+	.  error
+
+
+state 100
+	while : WHILE OPEN_PARENTHESES condition CLOSE_PARENTHESES . OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (31)
+
+	OPEN_CURLY_BRACES  shift 114
+	.  error
+
+
+state 101
+	condition : condition AND . condition  (56)
+
+	OPEN_PARENTHESES  shift 78
+	BOOLEAN  shift 79
+	NAME  shift 51
+	INTEGER  shift 52
+	.  error
+
+	func_call  goto 53
+	condition  goto 115
+	expresion  goto 81
+
+
+state 102
+	condition : condition OR . condition  (55)
+
+	OPEN_PARENTHESES  shift 78
+	BOOLEAN  shift 79
+	NAME  shift 51
+	INTEGER  shift 52
+	.  error
+
+	func_call  goto 53
+	condition  goto 116
+	expresion  goto 81
+
+
+state 103
+	condition : expresion LESS_THAN . expresion  (52)
+
+	BOOLEAN  shift 50
+	NAME  shift 51
+	INTEGER  shift 52
+	.  error
+
+	func_call  goto 53
+	expresion  goto 117
+
+
+state 104
+	condition : expresion GREATER_THAN . expresion  (51)
+
+	BOOLEAN  shift 50
+	NAME  shift 51
+	INTEGER  shift 52
+	.  error
+
+	func_call  goto 53
+	expresion  goto 118
+
+
+state 105
+	condition : expresion EQUAL . EQUAL expresion  (49)
+
+	EQUAL  shift 119
+	.  error
+
+
+state 106
+	condition : expresion NOT_EQUAL . expresion  (50)
+
+	BOOLEAN  shift 50
+	NAME  shift 51
+	INTEGER  shift 52
+	.  error
+
+	func_call  goto 53
+	expresion  goto 120
+
+
+state 107
+	condition : expresion GREATER_OR_EQUAL . expresion  (53)
+
+	BOOLEAN  shift 50
+	NAME  shift 51
+	INTEGER  shift 52
+	.  error
+
+	func_call  goto 53
+	expresion  goto 121
+
+
+state 108
+	condition : expresion LESS_OR_EQUAL . expresion  (54)
+
+	BOOLEAN  shift 50
+	NAME  shift 51
+	INTEGER  shift 52
+	.  error
+
+	func_call  goto 53
+	expresion  goto 122
+
+
+state 109
+	if : IF OPEN_PARENTHESES condition CLOSE_PARENTHESES . OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (32)
+	if : IF OPEN_PARENTHESES condition CLOSE_PARENTHESES . OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES ELSE OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (33)
+
+	OPEN_CURLY_BRACES  shift 123
+	.  error
+
+
+state 110
+	func_call : NAME OPEN_PARENTHESES call_args CLOSE_PARENTHESES .  (39)
+
+	.  reduce 39
+
+
+state 111
+	call_params : call_param COMMA . call_params  (42)
+
+	BOOLEAN  shift 50
+	NAME  shift 51
+	STRING  shift 83
+	INTEGER  shift 52
+	.  error
+
+	func_call  goto 53
+	call_params  goto 124
+	call_param  goto 86
+	expresion  goto 87
+
+
+state 112
+	for : FOR OPEN_PARENTHESES var_operation SEMICOLON condition . SEMICOLON var_operation CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (30)
+	condition : condition . OR condition  (55)
+	condition : condition . AND condition  (56)
+
+	SEMICOLON  shift 125
+	AND  shift 101
+	OR  shift 102
+	.  error
+
+
+state 113
+	condition : OPEN_PARENTHESES condition CLOSE_PARENTHESES .  (48)
+
+	.  reduce 48
+
+
+state 114
+	while : WHILE OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES . body CLOSE_CURLY_BRACES  (31)
+	body : .  (20)
+
+	RETURN  shift 31
+	FOR  shift 32
+	WHILE  shift 33
+	IF  shift 34
+	BOOLEAN_TYPE  shift 6
+	INTEGER_TYPE  shift 7
+	STRING_TYPE  shift 8
+	NAME  shift 35
+	CLOSE_CURLY_BRACES  reduce 20
+
+	type  goto 36
+	body  goto 126
+	sentences  goto 38
+	sentence  goto 39
+	declaration  goto 40
+	for  goto 41
+	while  goto 42
+	if  goto 43
+	var_operation  goto 44
+	func_call  goto 45
+	return  goto 46
+	assignment  goto 47
+
+
+115: shift/reduce conflict (shift 101, reduce 56) on AND
+115: shift/reduce conflict (shift 102, reduce 56) on OR
+state 115
+	condition : condition . OR condition  (55)
+	condition : condition . AND condition  (56)
+	condition : condition AND condition .  (56)
+
+	AND  shift 101
+	OR  shift 102
+	SEMICOLON  reduce 56
+	CLOSE_PARENTHESES  reduce 56
+
+
+116: shift/reduce conflict (shift 101, reduce 55) on AND
+116: shift/reduce conflict (shift 102, reduce 55) on OR
+state 116
+	condition : condition . OR condition  (55)
+	condition : condition OR condition .  (55)
+	condition : condition . AND condition  (56)
+
+	AND  shift 101
+	OR  shift 102
+	SEMICOLON  reduce 55
+	CLOSE_PARENTHESES  reduce 55
+
+
+state 117
+	condition : expresion LESS_THAN expresion .  (52)
+	expresion : expresion . PLUS expresion  (63)
+	expresion : expresion . MINUS expresion  (64)
+	expresion : expresion . MOD expresion  (65)
+	expresion : expresion . DIVIDE expresion  (66)
+	expresion : expresion . MULTIPLY expresion  (67)
+
+	PLUS  shift 71
+	MINUS  shift 72
+	MULTIPLY  shift 73
+	DIVIDE  shift 74
+	MOD  shift 75
+	SEMICOLON  reduce 52
+	CLOSE_PARENTHESES  reduce 52
+	AND  reduce 52
+	OR  reduce 52
+
+
+state 118
+	condition : expresion GREATER_THAN expresion .  (51)
+	expresion : expresion . PLUS expresion  (63)
+	expresion : expresion . MINUS expresion  (64)
+	expresion : expresion . MOD expresion  (65)
+	expresion : expresion . DIVIDE expresion  (66)
+	expresion : expresion . MULTIPLY expresion  (67)
+
+	PLUS  shift 71
+	MINUS  shift 72
+	MULTIPLY  shift 73
+	DIVIDE  shift 74
+	MOD  shift 75
+	SEMICOLON  reduce 51
+	CLOSE_PARENTHESES  reduce 51
+	AND  reduce 51
+	OR  reduce 51
+
+
+state 119
+	condition : expresion EQUAL EQUAL . expresion  (49)
+
+	BOOLEAN  shift 50
+	NAME  shift 51
+	INTEGER  shift 52
+	.  error
+
+	func_call  goto 53
+	expresion  goto 127
+
+
+state 120
+	condition : expresion NOT_EQUAL expresion .  (50)
+	expresion : expresion . PLUS expresion  (63)
+	expresion : expresion . MINUS expresion  (64)
+	expresion : expresion . MOD expresion  (65)
+	expresion : expresion . DIVIDE expresion  (66)
+	expresion : expresion . MULTIPLY expresion  (67)
+
+	PLUS  shift 71
+	MINUS  shift 72
+	MULTIPLY  shift 73
+	DIVIDE  shift 74
+	MOD  shift 75
+	SEMICOLON  reduce 50
+	CLOSE_PARENTHESES  reduce 50
+	AND  reduce 50
+	OR  reduce 50
+
+
+state 121
+	condition : expresion GREATER_OR_EQUAL expresion .  (53)
+	expresion : expresion . PLUS expresion  (63)
+	expresion : expresion . MINUS expresion  (64)
+	expresion : expresion . MOD expresion  (65)
+	expresion : expresion . DIVIDE expresion  (66)
+	expresion : expresion . MULTIPLY expresion  (67)
+
+	PLUS  shift 71
+	MINUS  shift 72
+	MULTIPLY  shift 73
+	DIVIDE  shift 74
+	MOD  shift 75
+	SEMICOLON  reduce 53
+	CLOSE_PARENTHESES  reduce 53
+	AND  reduce 53
+	OR  reduce 53
+
+
+state 122
+	condition : expresion LESS_OR_EQUAL expresion .  (54)
+	expresion : expresion . PLUS expresion  (63)
+	expresion : expresion . MINUS expresion  (64)
+	expresion : expresion . MOD expresion  (65)
+	expresion : expresion . DIVIDE expresion  (66)
+	expresion : expresion . MULTIPLY expresion  (67)
+
+	PLUS  shift 71
+	MINUS  shift 72
+	MULTIPLY  shift 73
+	DIVIDE  shift 74
+	MOD  shift 75
+	SEMICOLON  reduce 54
+	CLOSE_PARENTHESES  reduce 54
+	AND  reduce 54
+	OR  reduce 54
+
+
+state 123
+	if : IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES . body CLOSE_CURLY_BRACES  (32)
+	if : IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES . body CLOSE_CURLY_BRACES ELSE OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (33)
+	body : .  (20)
+
+	RETURN  shift 31
+	FOR  shift 32
+	WHILE  shift 33
+	IF  shift 34
+	BOOLEAN_TYPE  shift 6
+	INTEGER_TYPE  shift 7
+	STRING_TYPE  shift 8
+	NAME  shift 35
+	CLOSE_CURLY_BRACES  reduce 20
+
+	type  goto 36
+	body  goto 128
+	sentences  goto 38
+	sentence  goto 39
+	declaration  goto 40
+	for  goto 41
+	while  goto 42
+	if  goto 43
+	var_operation  goto 44
+	func_call  goto 45
+	return  goto 46
+	assignment  goto 47
+
+
+state 124
+	call_params : call_param COMMA call_params .  (42)
+
+	.  reduce 42
+
+
+state 125
+	for : FOR OPEN_PARENTHESES var_operation SEMICOLON condition SEMICOLON . var_operation CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (30)
+
+	NAME  shift 76
+	.  error
+
+	var_operation  goto 129
+	assignment  goto 47
+
+
+state 126
+	while : WHILE OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body . CLOSE_CURLY_BRACES  (31)
+
+	CLOSE_CURLY_BRACES  shift 130
+	.  error
+
+
+state 127
+	condition : expresion EQUAL EQUAL expresion .  (49)
+	expresion : expresion . PLUS expresion  (63)
+	expresion : expresion . MINUS expresion  (64)
+	expresion : expresion . MOD expresion  (65)
+	expresion : expresion . DIVIDE expresion  (66)
+	expresion : expresion . MULTIPLY expresion  (67)
+
+	PLUS  shift 71
+	MINUS  shift 72
+	MULTIPLY  shift 73
+	DIVIDE  shift 74
+	MOD  shift 75
+	SEMICOLON  reduce 49
+	CLOSE_PARENTHESES  reduce 49
+	AND  reduce 49
+	OR  reduce 49
+
+
+state 128
+	if : IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body . CLOSE_CURLY_BRACES  (32)
+	if : IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body . CLOSE_CURLY_BRACES ELSE OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (33)
+
+	CLOSE_CURLY_BRACES  shift 131
+	.  error
+
+
+state 129
+	for : FOR OPEN_PARENTHESES var_operation SEMICOLON condition SEMICOLON var_operation . CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (30)
+
+	CLOSE_PARENTHESES  shift 132
+	.  error
+
+
+state 130
+	while : WHILE OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES .  (31)
+
+	.  reduce 31
+
+
+state 131
+	if : IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES .  (32)
+	if : IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES . ELSE OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (33)
+
+	ELSE  shift 133
+	CLOSE_CURLY_BRACES  reduce 32
+	RETURN  reduce 32
+	FOR  reduce 32
+	WHILE  reduce 32
+	IF  reduce 32
+	BOOLEAN_TYPE  reduce 32
+	INTEGER_TYPE  reduce 32
+	STRING_TYPE  reduce 32
+	NAME  reduce 32
+
+
+state 132
+	for : FOR OPEN_PARENTHESES var_operation SEMICOLON condition SEMICOLON var_operation CLOSE_PARENTHESES . OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (30)
+
+	OPEN_CURLY_BRACES  shift 134
+	.  error
+
+
+state 133
+	if : IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES ELSE . OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES  (33)
+
+	OPEN_CURLY_BRACES  shift 135
+	.  error
+
+
+state 134
+	for : FOR OPEN_PARENTHESES var_operation SEMICOLON condition SEMICOLON var_operation CLOSE_PARENTHESES OPEN_CURLY_BRACES . body CLOSE_CURLY_BRACES  (30)
+	body : .  (20)
+
+	RETURN  shift 31
+	FOR  shift 32
+	WHILE  shift 33
+	IF  shift 34
+	BOOLEAN_TYPE  shift 6
+	INTEGER_TYPE  shift 7
+	STRING_TYPE  shift 8
+	NAME  shift 35
+	CLOSE_CURLY_BRACES  reduce 20
+
+	type  goto 36
+	body  goto 136
+	sentences  goto 38
+	sentence  goto 39
+	declaration  goto 40
+	for  goto 41
+	while  goto 42
+	if  goto 43
+	var_operation  goto 44
+	func_call  goto 45
+	return  goto 46
+	assignment  goto 47
+
+
+state 135
+	if : IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES ELSE OPEN_CURLY_BRACES . body CLOSE_CURLY_BRACES  (33)
+	body : .  (20)
+
+	RETURN  shift 31
+	FOR  shift 32
+	WHILE  shift 33
+	IF  shift 34
+	BOOLEAN_TYPE  shift 6
+	INTEGER_TYPE  shift 7
+	STRING_TYPE  shift 8
+	NAME  shift 35
+	CLOSE_CURLY_BRACES  reduce 20
+
+	type  goto 36
+	body  goto 137
+	sentences  goto 38
+	sentence  goto 39
+	declaration  goto 40
+	for  goto 41
+	while  goto 42
+	if  goto 43
+	var_operation  goto 44
+	func_call  goto 45
+	return  goto 46
+	assignment  goto 47
+
+
+state 136
+	for : FOR OPEN_PARENTHESES var_operation SEMICOLON condition SEMICOLON var_operation CLOSE_PARENTHESES OPEN_CURLY_BRACES body . CLOSE_CURLY_BRACES  (30)
+
+	CLOSE_CURLY_BRACES  shift 138
+	.  error
+
+
+state 137
+	if : IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES ELSE OPEN_CURLY_BRACES body . CLOSE_CURLY_BRACES  (33)
+
+	CLOSE_CURLY_BRACES  shift 139
+	.  error
+
+
+state 138
+	for : FOR OPEN_PARENTHESES var_operation SEMICOLON condition SEMICOLON var_operation CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES .  (30)
+
+	.  reduce 30
+
+
+state 139
+	if : IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES ELSE OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES .  (33)
+
+	.  reduce 33
+
+
+State 93 contains 5 shift/reduce conflicts.
+State 94 contains 5 shift/reduce conflicts.
+State 95 contains 5 shift/reduce conflicts.
+State 96 contains 5 shift/reduce conflicts.
+State 97 contains 5 shift/reduce conflicts.
+State 115 contains 2 shift/reduce conflicts.
+State 116 contains 2 shift/reduce conflicts.
+
+
+40 terminals, 27 nonterminals
+68 grammar rules, 140 states

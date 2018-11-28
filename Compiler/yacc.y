@@ -8,7 +8,7 @@ extern int yylex();
 
 %}
 
-%start list //Program
+%start program
 
 %union {
   	int a;
@@ -86,9 +86,6 @@ extern int yylex();
 
 %%                   /* beginning of rules section */
 
-list: ;/*Placeholder. Only accepting spaces with this rule*/
-
- /*
 program: defines functions {}
 	;
 
@@ -182,7 +179,7 @@ return: RETURN expresion {}
 condition: BOOLEAN {}
 	| OPEN_PARENTHESES condition CLOSE_PARENTHESES {}
 	| expresion EQUAL EQUAL expresion {}
-	| expresion NOT EQUAL expresion {}
+	| expresion NOT_EQUAL expresion {}
 	| expresion GREATER_THAN expresion {}
 	| expresion LESS_THAN expresion {}
 	| expresion GREATER_OR_EQUAL expresion {}
@@ -206,7 +203,6 @@ expresion: BOOLEAN {}
 	| expresion DIVIDE expresion {}
 	| expresion MULTIPLY expresion {}
 	;
-  */
 
 %%
 int main()
