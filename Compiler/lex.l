@@ -56,9 +56,8 @@
                         (yylval.text)[yyleng] = '\0';
 						return STRING;}
 
-\/\*[^\*\/]*\*\/    ;
-\/\/[^\n]*  ;
-[ \t]  ;
-
-\n  {yylineno++;}
+\/\*[^\*\/]*\*\/        ;
+\/\/[^\n]*              ;
+[ \t]                   ;
+\n                      {yylineno++;}
 %%

@@ -2,16 +2,7 @@
 #include <string.h>
 #include "matrix.h"
 
-typedef struct matrixT{
-	size_t width;
-	size_t height;
-	void *type;
-	void *mtrx;
-} matrixT;
 
-typedef matrixT* matrix;
-
-matrix createMatrix(size_t w, size_t h, void *t);
 
 matrix newMatrix() {
 	return calloc(1, sizeof(matrix));
@@ -52,10 +43,4 @@ matrix createMatrix(size_t w, size_t h, void *t) {
 	}
 
 	return mat;
-}
-
-void main(int argc, char const *argv[])
-{
-	/* code */
-	return;
 }
