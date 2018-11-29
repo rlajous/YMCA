@@ -84,6 +84,12 @@ extern int yylex();
   // %type <call_parameter_node> CallParameter
   // %type <return_node> Return
 
+ /* expressions go from lowest precedence to highest */
+%left PLUS MINUS 		  /* lowest precedence *//* left associative */
+%left MULTIPLY DIVIDE MOD /* higher precedence than + and - */
+%left EQUAL NOT_EQUAL GREATER_OR_EQUAL GREATER_THAN LESS_THAN LESS_OR_EQUAL
+%left OR AND 			  /* highest precedence */
+
 %%                   /* beginning of rules section */
 
 program: defines functions {}
