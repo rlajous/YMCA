@@ -49,7 +49,7 @@ extern int yylex();
 
 %token AND OR RETURN DEFINE FOR WHILE IF ELSE
 
-%token BOOLEAN_TYPE INTEGER_TYPE STRING_TYPE
+%token BOOLEAN_TYPE INTEGER_TYPE STRING_TYPE MATRIX_TYPE_START
 
 %token MAIN BOOLEAN NAME STRING
 
@@ -112,9 +112,14 @@ function: type NAME OPEN_PARENTHESES args CLOSE_PARENTHESES OPEN_CURLY_BRACES bo
 
 main: type MAIN OPEN_PARENTHESES CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {} 
 
+matrix_type: MATRIX_TYPE_START LESS_THAN INTEGER_TYPE GREATER_THAN
+		   | MATRIX_TYPE_START LESS_THAN BOOLEAN_TYPE GREATER_THAN
+		   | MATRIX_TYPE_START LESS_THAN STRING_TYPE  GREATER_THAN
+
 type: INTEGER_TYPE {}
 	| BOOLEAN_TYPE {}
 	| STRING_TYPE {}
+	| matrix_type {}
 	;
 
 args: params {}
@@ -196,19 +201,34 @@ condition: BOOLEAN {}
 	
 	
 assignment: NAME EQUAL expresion {}
-	| NAME EQUAL STRING {}
-	; 
+		  | NAME EQUAL STRING {}
+		  ;
 	
 expresion: BOOLEAN {}
-	| NAME {}
-	| INTEGER {}
-	| func_call {}
-	| expresion PLUS expresion {}
-	| expresion MINUS expresion {}
-	| expresion MOD expresion {}
-	| expresion DIVIDE expresion {}
-	| expresion MULTIPLY expresion {}
-	;
+		 | NAME {}
+		 | INTEGER {}
+		 | matrix {/* no se si esta bien meter matrix aca 
+		 			  porque por ej: ¿se puede hacer 
+					  if(m == {{1,2,3},{4,5,6},{7,8,9}})??? */}
+		 | func_call {}
+		 | expresion PLUS expresion {}
+		 | expresion MINUS expresion {}
+		 | expresion MOD expresion {}
+		 | expresion DIVIDE expresion {}
+		 | expresion MULTIPLY expresion {}
+		 | 
+		 ;
+
+matrix: OPEN_BRACKET sub_matrix CLOSE_BRACKET {}
+	  | OPEN_BRACKET numbers    CLOSE_BRACKET {}
+
+sub_matrix: OPEN_BRACKET numbers CLOSE_BRACKET COMMA sub_matrix {}
+		  | OPEN_BRACKET numbers CLOSE_BRACKET COMMA {}
+		  | OPEN_BRACKET numbers CLOSE_BRACKET {}
+
+numbers: DIGIT COMMA numbers {}
+	   | DIGIT COMMA {}
+	   | DIGIT {}
 
 %%
 int main()
