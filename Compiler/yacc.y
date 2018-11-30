@@ -140,17 +140,17 @@ body: sentences {$$ = $1;}
 	| {$$ = NULL;}
 	;
 
-sentences: sentence sentences {}
-	| sentence {}
+sentences: sentence sentences {$$ = new_sentences_node($1, $2);}
+	| sentence {$$ = new_sentences_node($1, NULL); }
 	;
 
-sentence: declaration SEMICOLON {}
-	| for {}
-	| while {}
-	| if {}
-	| var_operation SEMICOLON {}
-	| func_call SEMICOLON {}
-	| return SEMICOLON {}
+sentence: declaration SEMICOLON {$$ = new_sentence_node(SENTENCE_DECLARATION, $1, NULL, $2, NULL, NULL, NULL, NULL, NULL); }
+	| for {$$ = new_sentence_node(SENTENCE_FOR, NULL, NULL, NULL, $1, NULL, NULL, NULL, NULL); }
+	| while {$$ = new_sentence_node(SENTENCE_WHILE, NULL, NULL, NULL, NULL, $1, NULL, NULL, NULL);}
+	| if {$$ = new_sentence_node(SENTENCE_IF, NULL, NULL, NULL, NULL, NULL, $1, NULL, NULL);}
+	| var_operation SEMICOLON {$$ = new_sentence_node(SENTENCE_VARIABLE, NULL, $1, $2, NULL, NULL, NULL, NULL, NULL); }
+	| func_call SEMICOLON {$$ = new_sentence_node(SENTENCE_FUNCTION, NULL, NULL, $2, NULL, NULL, NULL, $1, NULL);}
+	| return SEMICOLON {$$ = new_sentence_node(SENTENCE_RETURN, NULL, NULL, $2, NULL, NULL, NULL, NULL, $1); }
 	;
 
 for: FOR OPEN_PARENTHESES var_operation SEMICOLON condition SEMICOLON var_operation CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {$$ = new_for_node(REGULAR_FOR, $3, $5, $7, $10, NULL, NULL);}
