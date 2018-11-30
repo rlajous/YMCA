@@ -1,12 +1,14 @@
 %{
 	#include<stdio.h>
-	#include "matrix.h"
-	#include "../Utilities/typeChecks.h"
+	#include "nodes.h"
+	#include "../Utilities/matrix.h"
+	#include "../Utilities/typesCheck.h"
 	#include "../Utilities/translateNodes.h"
 
 int regs[26];
 int base;
 
+extern void yyerror(char *);
 extern int yylex();
 
 %}
@@ -18,30 +20,29 @@ extern int yylex();
     char * text;
   	int value;
 
-  	// program_node* program_node;
-  	// defines_node* defines_node;
-  	// define_node* define_node;
-  	// functions_node* functions_node;
-  	// function_node* function_node;
-  	// type_node * type_node;
-  	// parameters_node* parameters_node;
-  	// sentences_node* sentences_node;
-  	// sentence_node* sentence_node;
-  	// declaration_node * declaration_node;
-  	// variable_opration_node* variable_opration_node;
-  	// assignment_node* assignment_node;
-  	// queue_stack_node* queue_stack_node;
-  	// elements_node* elements_node;
-  	// element_node* element_node;
-  	// if_node* if_node;
-  	// while_node* while_node;
-  	// for_node* for_node;
-  	// condition_node* condition_node;
-  	// expression_node* expression_node;
-  	// function_execute_node* function_execute_node;
-  	// call_parameters_node* call_parameters_node;
-  	// call_parameter_node* call_parameter_node;
-  	// return_node* return_node;
+  	program_node* program_node;
+  	defines_node* defines_node;
+  	define_node* define_node;
+  	functions_node* functions_node;
+  	function_node* function_node;
+  	type_node * type_node;
+  	parameters_node* parameters_node;
+  	sentences_node* sentences_node;
+  	sentence_node* sentence_node;
+  	declaration_node * declaration_node;
+  	variable_operation_node* variable_operation_node;
+  	assignment_node* assignment_node;
+  	elements_node* elements_node;
+  	element_node* element_node;
+  	if_node* if_node;
+  	while_node* while_node;
+  	for_node* for_node;
+  	condition_node* condition_node;
+  	expression_node* expression_node;
+  	function_execute_node* function_execute_node;
+  	call_parameters_node* call_parameters_node;
+  	call_parameter_node* call_parameter_node;
+  	return_node* return_node;
   }
 
 
@@ -62,32 +63,33 @@ extern int yylex();
 %token <text> STRING
 
 
-  // %type <program_node> Program
-  // %type <defines_node> Defines
-  // %type <define_node> Define
-  // %type <functions_node> Functions
-  // %type <function_node> Function Main
-  // %type <type_node> Type CompoundType
-  // %type <parameters_node> Arguments Parameters
-  // %type <sentences_node> Block Sentences
-  // %type <sentence_node> Sentence
-  // %type <text> SentenceEnd AssignmentOperation LogicalOperation Increment Decrement
-  // %type <declaration_node> Declaration
-  // %type <variable_opration_node> VariableOperation
-  // %type <assignment_node> Assignment
-  // %type <elements_node> ElementList Elements
-  // %type <element_node> Element
-  // %type <if_node> If Else
-  // %type <while_node> While
-  // %type <for_node> For
-  // %type <condition_node> Condition
-  // %type <expression_node> Expression
-  // %type <function_execute_node> FunctionExecute
-  // %type <call_parameters_node> CallArguments CallParameters
-  // %type <call_parameter_node> CallParameter
-  // %type <return_node> Return
+%type <program_node> program
+%type <defines_node> defines
+%type <define_node> define
+%type <functions_node> functions
+%type <function_node> function main
+%type <type_node> type /*compound_type Ver si va*/
+%type <parameters_node> args params
+%type <sentences_node> body sentences
+%type <sentence_node> sentence
+%type <text> /*SentenceEnd*/ assign_operation /*LogicalOperation Increment Decrement*/
+%type <declaration_node> declaration
+%type <variable_operation_node> var_operation
+%type <assignment_node> assignment
+ /*%type <elements_node> ElementList Elements va a servir para declarar
+ la matriz
+ %type <element_node> element*/
+%type <if_node> if
+%type <while_node> while
+%type <for_node> for
+%type <condition_node> condition
+%type <expression_node> expression
+%type <function_execute_node> func_call
+%type <call_parameters_node> call_args call_params
+%type <call_parameter_node> call_param
+%type <return_node> return
 
- /* expressions go from lowest precedence to highest */
+ /* terminals go from lowest precedence to highest */
 %left PLUS MINUS 		  /* lowest precedence *//* left associative */
 %left MULTIPLY DIVIDE MOD /* higher precedence than + and - */
 %left EQUAL NOT_EQUAL GREATER_OR_EQUAL GREATER_THAN LESS_THAN LESS_OR_EQUAL
@@ -129,11 +131,8 @@ args: params {$$ = $1;}
 	| {$$ = NULL;}
 	;
 
-params: param COMMA params {$$ = new_parameters_node($1, $2, $4);}
-	| param {$$ = new_parameters_node($1, $2, NULL);}
-	;
-
-param: type NAME {$$ = new_parameters_node($1, $2, NULL);}
+params: type NAME COMMA params {$$ = new_parameters_node($1, $2, $4);}
+	| type NAME {$$ = new_parameters_node($1, $2, NULL);}
 	;
 
 body: sentences {$$ = $1;}
@@ -153,14 +152,14 @@ sentence: declaration SEMICOLON {$$ = new_sentence_node(SENTENCE_DECLARATION, $1
 	| return SEMICOLON {$$ = new_sentence_node(SENTENCE_RETURN, NULL, NULL, $2, NULL, NULL, NULL, NULL, $1); }
 	;
 
-for: FOR OPEN_PARENTHESES var_operation SEMICOLON condition SEMICOLON var_operation CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {$$ = new_for_node(REGULAR_FOR, $3, $5, $7, $10, NULL, NULL);}
+for: FOR OPEN_PARENTHESES assignment SEMICOLON condition SEMICOLON var_operation CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {$$ = new_for_node(REGULAR_FOR, $3, $5, $7, $10, NULL, NULL);}
 	;
 
 while: WHILE OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {$$ = new_while_node($3, $6);}
 	;
 	
-if: IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {$$ = new_if_node($3, $6, $8);}
-	| IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES ELSE OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {$$ = new_if_else_node($3, $6, $8);}
+if: IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {$$ = new_if_node($3, $6, NULL);}
+	| IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES ELSE OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {$$ = new_if_else_node($3, $6, $10);} /*TODO: capaz falte algo con el else*/
 	;
 
 declaration: type NAME {$$ = new_declaration_node($1, $2);}
@@ -183,27 +182,27 @@ call_params: call_param COMMA call_params {$$ = new_call_parameters_node($1, $3)
 	| call_param {$$ = new_call_parameters_node($1, NULL);}
 	;	
 
-call_param: expresion {$$ = new_call_parameter_node(PARAMETER_EXPRESSION, NULL, $1);}
+call_param: expression {$$ = new_call_parameter_node(PARAMETER_EXPRESSION, NULL, $1);}
 	| STRING {$$ = new_call_parameter_node(PARAMERER_STRING, $1, NULL);}
 	;
 
-return: RETURN expresion {$$ = new_return_node(RETURN_EXPRESSION, NULL, $2);}
+return: RETURN expression {$$ = new_return_node(RETURN_EXPRESSION, NULL, $2);}
 	;
 
 condition: BOOLEAN {}
 	| OPEN_PARENTHESES condition CLOSE_PARENTHESES {$$ = new_condition_node(CONDITION_PARENTHESES, NULL, NULL, NULL, $2);}
-	| expresion EQUAL EQUAL expresion {}
-	| expresion NOT_EQUAL expresion {}
-	| expresion GREATER_THAN expresion {}
-	| expresion LESS_THAN expresion {}
-	| expresion GREATER_OR_EQUAL expresion {}
-	| expresion LESS_OR_EQUAL expresion {}
+	| expression EQUAL EQUAL expression {}
+	| expression NOT_EQUAL expression {}
+	| expression GREATER_THAN expression {}
+	| expression LESS_THAN expression {}
+	| expression GREATER_OR_EQUAL expression {}
+	| expression LESS_OR_EQUAL expression {}
 	| condition OR condition {}
 	| condition AND condition {}
 	;
 	
 	
-assignment: NAME assign_operation expresion {$$ = new_assignment_node(ASSIGNMENT_EXPRESSION, $1, NULL, NULL, $2, $3);}
+assignment: NAME assign_operation expression {$$ = new_assignment_node(ASSIGNMENT_EXPRESSION, $1, NULL, NULL, $2, $3);}
 		  | NAME EQUAL STRING {$$ = new_assignment_node(ASSIGNMENT_STRING, $1, $3, NULL, NULL, NULL);}
 		  ;
 
@@ -213,18 +212,18 @@ assign_operation: EQUAL {$$ = "=";}
 				| MULTIPLY EQUAL {$$ = "*=";}
 				| DIVIDE EQUAL {$$ = "/=";}
 	
-expresion: BOOLEAN {}
+expression: BOOLEAN {}
 		 | NAME {}
 		 | INTEGER {}
 		 | matrix {/* no se si esta bien meter matrix aca 
 		 			  porque por ej: ¿se puede hacer 
 					  if(m == {{1,2,3},{4,5,6},{7,8,9}})??? */}
 		 | func_call {}
-		 | expresion PLUS expresion {}
-		 | expresion MINUS expresion {}
-		 | expresion MOD expresion {}
-		 | expresion DIVIDE expresion {}
-		 | expresion MULTIPLY expresion {}
+		 | expression PLUS expression {}
+		 | expression MINUS expression {}
+		 | expression MOD expression {}
+		 | expression DIVIDE expression {}
+		 | expression MULTIPLY expression {}
 		 | 
 		 ;
 
@@ -243,12 +242,6 @@ numbers: DIGIT COMMA numbers {}
 int main()
 {
  return(yyparse());
-}
-
-void yyerror(s)
-char *s;
-{
-  fprintf(stderr, "%s\n",s);
 }
 
 int yywrap()

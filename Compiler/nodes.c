@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "nodes.h"
-#include "../Utilities/typeChecks.h"
+#include "../Utilities/typesCheck.h"
 
 program_node*
 new_program_node(defines_node * defines,
@@ -95,7 +95,7 @@ new_function_node(type_node * type, char* name, parameters_node * parameters, se
 }
 
 parameters_node*
-new_parameters_node(type_node * type, char*name, parameters_node * next){
+new_parameters_node(type_node * type, char * name, parameters_node * next){
 
 	parameters_node * node = malloc(sizeof(parameters_node));
 	char * name_aux = malloc(strlen(name) + 1);
@@ -132,7 +132,7 @@ new_sentences_node(sentence_node * sentence, sentences_node * sentences){
 }
 
 sentence_node*
-new_sentence_node(enum productions production, declaration_node * declaration, variable_opration_node * variable_operation,  char* sentenceEnd,
+new_sentence_node(enum productions production, declaration_node * declaration, variable_operation_node * variable_operation,  char* sentenceEnd,
 	for_node * for_node, while_node * while_node, if_node * if_node,
 	function_execute_node* function_execute, return_node*return_node){
 
@@ -173,9 +173,9 @@ new_declaration_node(type_node * type, char * name){
 
 }
 
-variable_opration_node*
-new_variable_opration_node(enum productions production, assignment_node * assignment, char * increment_decrement_name){
-	variable_opration_node * node = malloc(sizeof(variable_opration_node));
+variable_operation_node*
+new_variable_operation_node(enum productions production, assignment_node * assignment, char * increment_decrement_name){
+	variable_operation_node * node = malloc(sizeof(variable_operation_node));
 	char * name_aux;
 
 	node -> production = production;
@@ -326,7 +326,7 @@ new_while_node(condition_node * condition, sentences_node * sentences){
 
 for_node*
 new_for_node(enum productions production, assignment_node *assignment, condition_node *condition,
-			variable_opration_node *variable_operation, sentences_node *sentences, char * variable,
+			variable_operation_node *variable_operation, sentences_node *sentences, char * variable,
 		char * structure){
 
 	for_node * node = malloc(sizeof(for_node));
@@ -339,21 +339,6 @@ new_for_node(enum productions production, assignment_node *assignment, condition
 		node -> sentences = sentences;
 		node -> variable = NULL;
 		node -> structure = NULL;
-	}else if(production == FOR_EACH){
-		node -> assignment = NULL;
-		node -> condition = NULL;
-		node -> variable_operation = NULL;
-		node -> sentences = sentences;
-
-		char * variable_aux = malloc(strlen(variable) + 1);
-		strcpy(variable_aux, variable);
-		node -> variable = variable_aux;
-		if(!existsVariable(variable_aux))
-			error(VARIABLE_NOT_DEFINED);
-
-		char * structure_aux = malloc(strlen(structure) + 1);
-		strcpy(structure_aux, structure);
-		node -> structure = structure_aux;
 	}else{
 		error(INCOMPATIBLE);
 	}

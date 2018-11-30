@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../Compiler/nodes.h"
-#include "typeChecks.h"
+#include "typesCheck.h"
 
 functionList * functions = NULL;
 variableList * defines;

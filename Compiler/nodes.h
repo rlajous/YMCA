@@ -5,12 +5,12 @@ enum productions
 {
 	DEFINE_INTEGER, DEFINE_STRING, SENTENCE_DECLARATION, SENTENCE_VARIABLE, SENTENCE_FOR, SENTENCE_WHILE, SENTENCE_IF, SENTENCE_FUNCTION, SENTENCE_RETURN,
 	VARIABLE_ASSIGNMENT, VARIABLE_INCREMENT, VARIABLE_DECREMENT, ASSIGNMENT_STRING, ASSIGNMENT_QUEUE, ASSIGNMENT_STACK, ASSIGNMENT_EXPRESSION,
-	ELEMENT_BOOLEAN, ELEMENT_STRING, ELEMENT_VARIABLE, ELEMENT_INTEGER, FOR_EACH, REGULAR_FOR, CONDITION_LOGICAL, CONDITION_EXPRESSION, CONDITION_PARENTHESES,
+	ELEMENT_BOOLEAN, ELEMENT_STRING, ELEMENT_VARIABLE, ELEMENT_INTEGER, REGULAR_FOR, CONDITION_LOGICAL, CONDITION_EXPRESSION, CONDITION_PARENTHESES,
 	EXPRESSION_BOOLEAN, EXPRESSION_VARIABLE, EXPRESSION_INTEGER, EXPRESSION_FUNCTION, EXPRESSION_OPERATION, PARAMERER_STRING, PARAMETER_EXPRESSION,
 	RETURN_STRING, RETURN_EXPRESSION
 };
 
-typedef enum {INTEGER_T, BOOLEAN_T, STRING_T} basicTypes;
+typedef enum {INTEGER_T, BOOLEAN_T, STRING_T, MATRIX_T} basicTypes;
 
 typedef enum {QUEUE_T = 4, STACK_T, NONE} compoundTypes;
 
@@ -65,7 +65,7 @@ typedef enum {FUNCTION_REPETITION_ERROR, VARIABLE_REPETITION, INCOMPATIBLE, INCO
 		enum productions production;
 		struct type_node * type;
 		struct declaration_node * declaration;
-		struct variable_opration_node *variable_opration;
+		struct variable_operation_node *variable_opration;
 		struct for_node *for_node;
 		struct while_node *while_node;
 		struct if_node *if_node;
@@ -79,11 +79,11 @@ typedef enum {FUNCTION_REPETITION_ERROR, VARIABLE_REPETITION, INCOMPATIBLE, INCO
 		char * name;
 	}declaration_node;
 
-	typedef struct variable_opration_node{
+	typedef struct variable_operation_node{
 		enum productions production;
 		struct assignment_node *assignment;
 		char * increment_decrement_name;
-	}variable_opration_node;
+	}variable_operation_node;
 
 	typedef struct assignment_node{
 		enum productions production;
@@ -125,7 +125,7 @@ typedef enum {FUNCTION_REPETITION_ERROR, VARIABLE_REPETITION, INCOMPATIBLE, INCO
 		enum productions production;
 		struct assignment_node *assignment;
 		struct condition_node *condition;
-		struct variable_opration_node *variable_operation;
+		struct variable_operation_node *variable_operation;
 		struct sentences_node *sentences;
 		char * variable;
 		char * structure;
@@ -187,12 +187,12 @@ parameters_node* new_parameters_node(type_node * type, char*name, parameters_nod
 
 sentences_node*	new_sentences_node(sentence_node * sentence, sentences_node * sentences);
 
-sentence_node* new_sentence_node(enum productions production, declaration_node * declaration, variable_opration_node * variable_operation,  char* sentenceEnd,
+sentence_node* new_sentence_node(enum productions production, declaration_node * declaration, variable_operation_node * variable_operation,  char* sentenceEnd,
 	for_node * for_node, while_node * while_node, if_node * if_node,function_execute_node* function_execute, return_node*return_node);
 
 declaration_node *	new_declaration_node(type_node * type, char * name);
 
-variable_opration_node*	new_variable_opration_node(enum productions production, assignment_node * assignment, char * increment_decrement_name);
+variable_operation_node*	new_variable_operation_node(enum productions production, assignment_node * assignment, char * increment_decrement_name);
 
 assignment_node* new_assignment_node(enum productions production, char * name,
 	char * string, queue_stack_node * queue_stack, char* assignment_operation, expression_node * expression);
@@ -208,7 +208,7 @@ if_node *	new_if_node(condition_node * condition, sentences_node * sentences, if
 while_node*	new_while_node(condition_node * condition, sentences_node * sentences);
 
 for_node*	new_for_node(enum productions production, assignment_node *assignment, condition_node *condition,
-			variable_opration_node *variable_operation, sentences_node *sentences, char * variable,	char * structure);
+			variable_operation_node *variable_operation, sentences_node *sentences, char * variable,	char * structure);
 
 condition_node*	new_condition_node(enum productions production, expression_node *expression_1, char * logical_operation,
 	expression_node *expression_2, condition_node *condition);
