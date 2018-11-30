@@ -207,11 +207,11 @@ assignment: NAME assign_operation expresion {}
 		  | NAME EQUAL STRING {}
 		  ;
 
-assign_operation: EQUAL {}
-				| PLUS EQUAL {}
-				| MINUS EQUAL {}
-				| MULTIPLY EQUAL {}
-				| DIVIDE EQUAL {}
+assign_operation: EQUAL {$$ = "=";}
+				| PLUS EQUAL {$$ = "+=";}
+				| MINUS EQUAL {$$ = "-="; }
+				| MULTIPLY EQUAL {$$ = "*=";}
+				| DIVIDE EQUAL {$$ = "/=";}
 	
 expresion: BOOLEAN {}
 		 | NAME {}
