@@ -16,7 +16,7 @@ matrix newMatrix();
 
 void freeMatrix(matrix mat);
 
-matrix createMatrix(size_t w, size_t h, void *t);
+matrix createMatrix(size_t w, size_t h, int t);
 
 void addValue(int row, int col, int value, matrix mat);
 
