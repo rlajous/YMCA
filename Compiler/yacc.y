@@ -172,7 +172,7 @@ var_operation: assignment {$$ = new_variable_opration_node(VARIABLE_ASSIGNMENT, 
 	| NAME MINUS MINUS {$$ = new_variable_opration_node(VARIABLE_DECREMENT, NULL, $1);}
 	;
 
-func_call: NAME OPEN_PARENTHESES call_args CLOSE_PARENTHESES {}
+func_call: NAME OPEN_PARENTHESES call_args CLOSE_PARENTHESES {$$ = new_function_execute_node($1, $3);}
 	;
 
 call_args: {$$ = NULL; }
