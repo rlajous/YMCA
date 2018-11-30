@@ -143,13 +143,13 @@ sentences: sentence sentences {$$ = new_sentences_node($1, $2);}
 	| sentence {$$ = new_sentences_node($1, NULL); }
 	;
 
-sentence: declaration SEMICOLON {$$ = new_sentence_node(SENTENCE_DECLARATION, $1, NULL, ';', NULL, NULL, NULL, NULL, NULL); }
+sentence: declaration SEMICOLON {$$ = new_sentence_node(SENTENCE_DECLARATION, $1, NULL, ";", NULL, NULL, NULL, NULL, NULL); }
 	| for {$$ = new_sentence_node(SENTENCE_FOR, NULL, NULL, NULL, $1, NULL, NULL, NULL, NULL); }
 	| while {$$ = new_sentence_node(SENTENCE_WHILE, NULL, NULL, NULL, NULL, $1, NULL, NULL, NULL);}
 	| if {$$ = new_sentence_node(SENTENCE_IF, NULL, NULL, NULL, NULL, NULL, $1, NULL, NULL);}
-	| var_operation SEMICOLON {$$ = new_sentence_node(SENTENCE_VARIABLE, NULL, $1, ';', NULL, NULL, NULL, NULL, NULL); }
-	| func_call SEMICOLON {$$ = new_sentence_node(SENTENCE_FUNCTION, NULL, NULL, ';', NULL, NULL, NULL, $1, NULL);}
-	| return SEMICOLON {$$ = new_sentence_node(SENTENCE_RETURN, NULL, NULL, ';', NULL, NULL, NULL, NULL, $1); }
+	| var_operation SEMICOLON {$$ = new_sentence_node(SENTENCE_VARIABLE, NULL, $1, ";", NULL, NULL, NULL, NULL, NULL); }
+	| func_call SEMICOLON {$$ = new_sentence_node(SENTENCE_FUNCTION, NULL, NULL, ";", NULL, NULL, NULL, $1, NULL);}
+	| return SEMICOLON {$$ = new_sentence_node(SENTENCE_RETURN, NULL, NULL, ";", NULL, NULL, NULL, NULL, $1); }
 	;
 
 for: FOR OPEN_PARENTHESES assignment SEMICOLON condition SEMICOLON var_operation CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {$$ = new_for_node(REGULAR_FOR, $3, $5, $7, $10, NULL, NULL);}
@@ -166,9 +166,9 @@ declaration: type NAME {$$ = new_declaration_node($1, $2);}
 	| type assignment {}
 	;
 
-var_operation: assignment {$$ = new_variable_opration_node(VARIABLE_ASSIGNMENT, $1, NULL);}
-	| NAME PLUS PLUS {$$ = new_variable_opration_node(VARIABLE_INCREMENT, NULL, $1);}
-	| NAME MINUS MINUS {$$ = new_variable_opration_node(VARIABLE_DECREMENT, NULL, $1);}
+var_operation: assignment {$$ = new_variable_operation_node(VARIABLE_ASSIGNMENT, $1, NULL);}
+	| NAME PLUS PLUS {$$ = new_variable_operation_node(VARIABLE_INCREMENT, NULL, $1);}
+	| NAME MINUS MINUS {$$ = new_variable_operation_node(VARIABLE_DECREMENT, NULL, $1);}
 	;
 
 func_call: NAME OPEN_PARENTHESES call_args CLOSE_PARENTHESES {$$ = new_function_execute_node($1, $3);}
