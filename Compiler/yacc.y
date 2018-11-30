@@ -163,7 +163,7 @@ if: IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE
 	| IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES ELSE OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {$$ = new_if_else_node($3, $6, $8);}
 	;
 
-declaration: type NAME {}
+declaration: type NAME {$$ = new_declaration_node($1, $2);}
 	| type assignment {}
 	;
 
