@@ -113,7 +113,7 @@ functions: function functions {$$ = new_functions_node($1, $2);}
 function: type NAME OPEN_PARENTHESES args CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {$$ = new_function_node($1, $2, $4, $7);}
 	;
 
-main: type MAIN OPEN_PARENTHESES CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {} 
+main: type MAIN OPEN_PARENTHESES CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {$$ = new_function_node($1, "main", NULL, $6);} 
 
 matrix_type: MATRIX_TYPE_START LESS_THAN INTEGER_TYPE GREATER_THAN
 		   | MATRIX_TYPE_START LESS_THAN BOOLEAN_TYPE GREATER_THAN
@@ -125,19 +125,19 @@ type: INTEGER_TYPE {$$ = INTEGER_T;}
 	| matrix_type {$$ = MATRIX_T;}
 	;
 
-args: params {}
-	| {}
+args: params {$$ = $1;}
+	| {$$ = NULL;}
 	;
 
-params: param COMMA params {}
-	| param {}
+params: param COMMA params {$$ = new_parameters_node($1, $2, $4);}
+	| param {$$ = new_parameters_node($1, $2, NULL);}
 	;
 
-param: type NAME {}
+param: type NAME {$$ = new_parameters_node($1, $2, NULL);}
 	;
 
-body: sentences {}
-	| {}
+body: sentences {$$ = $1;}
+	| {$$ = NULL;}
 	;
 
 sentences: sentence sentences {}
@@ -153,14 +153,14 @@ sentence: declaration SEMICOLON {}
 	| return SEMICOLON {}
 	;
 
-for: FOR OPEN_PARENTHESES var_operation SEMICOLON condition SEMICOLON var_operation CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {}
+for: FOR OPEN_PARENTHESES var_operation SEMICOLON condition SEMICOLON var_operation CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {$$ = new_for_node(REGULAR_FOR, $3, $5, $7, $10, NULL, NULL);}
 	;
 
-while: WHILE OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {}
+while: WHILE OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {$$ = new_while_node($3, $6);}
 	;
 	
-if: IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {}
-	| IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES ELSE OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {}
+if: IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {$$ = new_if_node($3, $6, $8);}
+	| IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES ELSE OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {$$ = new_if_else_node($3, $6, $8);}
 	;
 
 declaration: type NAME {}
