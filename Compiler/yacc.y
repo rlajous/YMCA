@@ -167,9 +167,9 @@ declaration: type NAME {$$ = new_declaration_node($1, $2);}
 	| type assignment {}
 	;
 
-var_operation: assignment {}
-	| NAME PLUS PLUS {}
-	| NAME MINUS MINUS {}
+var_operation: assignment {$$ = new_variable_opration_node(VARIABLE_ASSIGNMENT, $1, NULL);}
+	| NAME PLUS PLUS {$$ = new_variable_opration_node(VARIABLE_INCREMENT, NULL, $1);}
+	| NAME MINUS MINUS {$$ = new_variable_opration_node(VARIABLE_DECREMENT, NULL, $1);}
 	;
 
 func_call: NAME OPEN_PARENTHESES call_args CLOSE_PARENTHESES {}
@@ -187,11 +187,11 @@ call_param: expresion {$$ = new_call_parameter_node(PARAMETER_EXPRESSION, NULL, 
 	| STRING {$$ = new_call_parameter_node(PARAMERER_STRING, $1, NULL);}
 	;
 
-return: RETURN expresion {}
+return: RETURN expresion {$$ = new_return_node(RETURN_EXPRESSION, NULL, $2);}
 	;
 
 condition: BOOLEAN {}
-	| OPEN_PARENTHESES condition CLOSE_PARENTHESES {}
+	| OPEN_PARENTHESES condition CLOSE_PARENTHESES {$$ = new_condition_node(CONDITION_PARENTHESES, NULL, NULL, NULL, $2);}
 	| expresion EQUAL EQUAL expresion {}
 	| expresion NOT_EQUAL expresion {}
 	| expresion GREATER_THAN expresion {}
@@ -203,8 +203,8 @@ condition: BOOLEAN {}
 	;
 	
 	
-assignment: NAME assign_operation expresion {}
-		  | NAME EQUAL STRING {}
+assignment: NAME assign_operation expresion {$$ = new_assignment_node(ASSIGNMENT_EXPRESSION, $1, NULL, NULL, $2, $3);}
+		  | NAME EQUAL STRING {$$ = new_assignment_node(ASSIGNMENT_STRING, $1, $3, NULL, NULL, NULL);}
 		  ;
 
 assign_operation: EQUAL {$$ = "=";}
