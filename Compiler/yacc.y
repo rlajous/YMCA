@@ -175,16 +175,16 @@ var_operation: assignment {}
 func_call: NAME OPEN_PARENTHESES call_args CLOSE_PARENTHESES {}
 	;
 
-call_args: {}
-	| call_params {}
+call_args: {$$ = NULL; }
+	| call_params {$$ = $1;}
 	;
 
-call_params: call_param COMMA call_params {}
-	| call_param {}
+call_params: call_param COMMA call_params {$$ = new_call_parameters_node($1, $3);}
+	| call_param {$$ = new_call_parameters_node($1, NULL);}
 	;	
 
-call_param: expresion {}
-	| STRING {}
+call_param: expresion {$$ = new_call_parameter_node(PARAMETER_EXPRESSION, NULL, $1);}
+	| STRING {$$ = new_call_parameter_node(PARAMERER_STRING, $1, NULL);}
 	;
 
 return: RETURN expresion {}
