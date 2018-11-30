@@ -1,5 +1,8 @@
 %{
-#include<stdio.h>
+	#include<stdio.h>
+	#include "matrix.h"
+	#include "../Utilities/typeChecks.h"
+	#include "../Utilities/translateNodes.h"
 
 int regs[26];
 int base;
