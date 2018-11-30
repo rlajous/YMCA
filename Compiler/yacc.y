@@ -1,5 +1,5 @@
 %{
-	#include<stdio.h>
+	#include <stdio.h>
 	#include "nodes.h"
 	#include "../Utilities/matrix.h"
 	#include "../Utilities/typesCheck.h"
