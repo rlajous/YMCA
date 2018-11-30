@@ -80,6 +80,7 @@ extern int yylex();
  la matriz
  %type <element_node> element*/
 %type <if_node> if
+%type <if_node> else
 %type <while_node> while
 %type <for_node> for
 %type <condition_node> condition
@@ -161,9 +162,9 @@ while: WHILE OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body
 if: IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {$$ = new_if_node($3, $6, NULL);}
 	;
 
-Else: ELSE OPEN_CURLY_BRACES Block CLOSE_CURLY_BRACES	{$$ = new_if_node(NULL, $3, NULL); }
-				| ELSE OPEN_PARENTHESES Condition CLOSE_PARENTHESES OPEN_CURLY_BRACES Block CLOSE_CURLY_BRACES Else {$$ = new_if_node($3, $6, $8); }
-				| /* empty */{$$ = NULL; }
+else: ELSE OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES	{$$ = new_if_node(NULL, $3, NULL); }
+				| ELSE OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES else {$$ = new_if_node($3, $6, $8); }
+				| /* empty */{$$ = NULL;}
 
 declaration: type NAME {$$ = new_declaration_node($1, $2);}
 	| type assignment {}
