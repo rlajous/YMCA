@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../Compiler/nodes.h"
-#include "translateNodes.h"
 #include "typesCheck.h"
 
 void translateProgramNode(program_node * program);

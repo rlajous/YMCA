@@ -46,7 +46,7 @@ extern int yylex();
   }
 
 
-%token DIGIT LETTER SEMICOLON
+%token DIGIT LETTER
 %token SEMICOLON COLON COMMA OPEN_CURLY_BRACES CLOSE_CURLY_BRACES LESS_THAN GREATER_THAN 
 %token OPEN_PARENTHESES CLOSE_PARENTHESES OPEN_BRACKET CLOSE_BRACKET PLUS MINUS MULTIPLY DIVIDE MOD
 %token EQUAL NOT_EQUAL GREATER_OR_EQUAL LESS_OR_EQUAL
@@ -55,7 +55,7 @@ extern int yylex();
 
 %token BOOLEAN_TYPE INTEGER_TYPE STRING_TYPE MATRIX_TYPE_START
 
-%token MAIN BOOLEAN NAME STRING
+%token MAIN
 
 %token <value> BOOLEAN
 %token <value> INTEGER
@@ -159,7 +159,7 @@ for: FOR OPEN_PARENTHESES assignment SEMICOLON condition SEMICOLON var_operation
 while: WHILE OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {$$ = new_while_node($3, $6);}
 	;
 	
-if: IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {$$ = new_if_node($3, $6, NULL);}
+if: IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES else {$$ = new_if_node($3, $6, NULL);}
 	;
 
 else: ELSE OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES	{$$ = new_if_node(NULL, $3, NULL); }
@@ -228,7 +228,6 @@ expression: BOOLEAN {}
 		 | expression MOD expression {}
 		 | expression DIVIDE expression {}
 		 | expression MULTIPLY expression {}
-		 | 
 		 ;
 
 matrix: OPEN_BRACKET sub_matrix CLOSE_BRACKET {}

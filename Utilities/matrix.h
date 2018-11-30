@@ -1,7 +1,7 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-enum types { INTEGER_TYPE, FLOAT_TYPE, DOUBLE_TYPE, CHAR_TYPE, STRING_TYPE};
+enum types { INT_TYPE, FLOAT_TYPE, DOUBLE_TYPE, CHAR_TYPE, STR_TYPE};
 
 typedef struct matrixT{
 	size_t width;

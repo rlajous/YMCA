@@ -23,7 +23,7 @@ matrix createMatrix(size_t w, size_t h, int t) {
 	matrix mat = newMatrix();
 
 	switch(t) {
-		case INTEGER_TYPE: mat->type = INTEGER_TYPE;
+		case INT_TYPE: mat->type = INT_TYPE;
 		mat->mtrx = calloc(w*h,sizeof(int));
 		break;
 		case FLOAT_TYPE: mat->type = FLOAT_TYPE;
@@ -35,7 +35,7 @@ matrix createMatrix(size_t w, size_t h, int t) {
 		case CHAR_TYPE: mat->type = CHAR_TYPE;
 		mat->mtrx = calloc(w*h,sizeof(char));
 		break;
-		case STRING_TYPE: mat->type = STRING_TYPE;
+		case STR_TYPE: mat->type = STR_TYPE;
 		mat->mtrx = calloc(w*h,sizeof(char *));
 		break;
 		default: freeMatrix(mat);return NULL;
@@ -62,7 +62,7 @@ void addValue(int row, int col, int value, matrix mat){
   
 matrix sumMatrix( matrix a, matrix b) {
 	
-	if(b->type != INTEGER_TYPE && b->type != DOUBLE_TYPE && b->type != FLOAT_TYPE && a->type != INTEGER_TYPE && a->type != DOUBLE_TYPE && a->type != FLOAT_TYPE) { 
+	if(b->type != INT_TYPE && b->type != DOUBLE_TYPE && b->type != FLOAT_TYPE && a->type != INT_TYPE && a->type != DOUBLE_TYPE && a->type != FLOAT_TYPE) { 
 		return NULL;
 	}
 
@@ -94,7 +94,7 @@ matrix sumMatrix( matrix a, matrix b) {
 
 matrix subMatrix( matrix a, matrix b) {
 	
-	if(b->type != INTEGER_TYPE && b->type != DOUBLE_TYPE && b->type != FLOAT_TYPE && a->type != INTEGER_TYPE && a->type != DOUBLE_TYPE && a->type != FLOAT_TYPE) { 
+	if(b->type != INT_TYPE && b->type != DOUBLE_TYPE && b->type != FLOAT_TYPE && a->type != INT_TYPE && a->type != DOUBLE_TYPE && a->type != FLOAT_TYPE) { 
 		return NULL;
 	}
 
@@ -127,7 +127,7 @@ matrix subMatrix( matrix a, matrix b) {
 
 matrix multMatrixEsc( matrix a, double e) {
 	
-	if(a->type != INTEGER_TYPE && a->type != DOUBLE_TYPE && a->type != FLOAT_TYPE) { 
+	if(a->type != INT_TYPE && a->type != DOUBLE_TYPE && a->type != FLOAT_TYPE) { 
 		return NULL;
 	}
 
@@ -154,7 +154,7 @@ matrix multMatrixEsc( matrix a, double e) {
 
 matrix mulMatrix( matrix a, matrix b) {
 	
-	if(b->type != INTEGER_TYPE && b->type != DOUBLE_TYPE && b->type != FLOAT_TYPE && a->type != INTEGER_TYPE && a->type != DOUBLE_TYPE && a->type != FLOAT_TYPE) { 
+	if(b->type != INT_TYPE && b->type != DOUBLE_TYPE && b->type != FLOAT_TYPE && a->type != INT_TYPE && a->type != DOUBLE_TYPE && a->type != FLOAT_TYPE) { 
 		return NULL;
 	}
 
