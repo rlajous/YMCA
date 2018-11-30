@@ -95,22 +95,22 @@ extern int yylex();
 
 %%                   /* beginning of rules section */
 
-program: defines functions {}
+program: defines functions {$$ = new_program_node($1, $2); translateProgramNode($$);}
 	;
 
-defines: define defines {}
-	| define {}
+defines: define defines {$$ = new_defines_node($1, $2);}
+	| define {$$ = NULL; createFunction();}
 	;
-define: DEFINE NAME BOOLEAN {}
-	| DEFINE NAME INTEGER {}
-	| DEFINE NAME STRING {}
-	;
-
-functions: function functions {}
-	| main {}
+define: DEFINE NAME BOOLEAN {$$ = new_define_node(DEFINE_INTEGER, $2, $3, NULL);}
+	| DEFINE NAME INTEGER {$$ = new_define_node(DEFINE_INTEGER, $2, $3, NULL);}
+	| DEFINE NAME STRING {$$ = new_define_node(DEFINE_STRING, $2, 0, $3);}
 	;
 
-function: type NAME OPEN_PARENTHESES args CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {}
+functions: function functions {$$ = new_functions_node($1, $2);}
+	| main {$$ = new_functions_node($1, NULL);}
+	;
+
+function: type NAME OPEN_PARENTHESES args CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {$$ = new_function_node($1, $2, $4, $7);}
 	;
 
 main: type MAIN OPEN_PARENTHESES CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {} 
