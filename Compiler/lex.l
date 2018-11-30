@@ -38,7 +38,7 @@
 "boolean"               {return BOOLEAN_TYPE;}
 "int"                   {return INTEGER_TYPE;}
 "string"                {return STRING_TYPE;}
-"matrix"                {return MATRIX_TYPE_START}
+"matrix"                {return MATRIX_TYPE_START;}
 
 "main"                  {return MAIN;}
 

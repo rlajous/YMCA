@@ -1,1 +1,7 @@
-riddle me this!
+
+#define ALGO 2
+
+int main() {
+    int v=1;
+    
+}

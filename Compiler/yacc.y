@@ -96,7 +96,7 @@ program: defines functions {}
 	;
 
 defines: define defines {}
-	| define {}
+	| /* lambda */ {}
 	;
 define: DEFINE NAME BOOLEAN {}
 	| DEFINE NAME INTEGER {}
@@ -200,9 +200,15 @@ condition: BOOLEAN {}
 	;
 	
 	
-assignment: NAME EQUAL expresion {}
+assignment: NAME assign_operation expresion {}
 		  | NAME EQUAL STRING {}
 		  ;
+
+assign_operation: EQUAL {}
+				| PLUS EQUAL {}
+				| MINUS EQUAL {}
+				| MULTIPLY EQUAL {}
+				| DIVIDE EQUAL {}
 	
 expresion: BOOLEAN {}
 		 | NAME {}
