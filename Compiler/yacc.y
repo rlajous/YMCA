@@ -193,6 +193,7 @@ call_param: expression {$$ = new_call_parameter_node(PARAMETER_EXPRESSION, NULL,
 	;
 
 return: RETURN expression {$$ = new_return_node(RETURN_EXPRESSION, NULL, $2);}
+	| RETURN STRING {$$ = new_return_node(RETURN_STRING, $2, NULL);}
 	;
 
 condition: OPEN_PARENTHESES condition CLOSE_PARENTHESES {$$ = new_condition_node(CONDITION_PARENTHESES, NULL, NULL, NULL, $2);}
@@ -203,14 +204,14 @@ condition: OPEN_PARENTHESES condition CLOSE_PARENTHESES {$$ = new_condition_node
 	| expression GREATER_OR_EQUAL expression 			{$$ = new_condition_node(CONDITION_LOGICAL, $1, ">=", $3, NULL); }
 	| expression LESS_OR_EQUAL expression 				{$$ = new_condition_node(CONDITION_LOGICAL, $1, "<=", $3, NULL); }
 	| expression 										{$$ = new_condition_node(CONDITION_EXPRESSION, $1, NULL, NULL, NULL);}
-	| condition OR condition 							{$$ = new_condition_node(CONDITION_LOGICAL, $1, "==", $3, NULL); }
-	| condition AND condition 							{$$ = new_condition_node(CONDITION_LOGICAL, $1, "&&", $3, NULL);}
+	| expression OR expression 							{$$ = new_condition_node(CONDITION_LOGICAL, $1, "==", $3, NULL); }
+	| expression AND expression							{$$ = new_condition_node(CONDITION_LOGICAL, $1, "&&", $3, NULL);}
 	;
 	
 	
 assignment: NAME assign_operation expression	{$$ = new_assignment_node(ASSIGNMENT_EXPRESSION, $1, NULL, NULL, $2, $3);}
 		  | NAME EQUAL STRING 				 {$$ = new_assignment_node(ASSIGNMENT_STRING, $1, $3, NULL, NULL, NULL);}
-		  | NAME EQUAL matrix 				 {$$ = new_assignment_node(ASSIGNMENT_MATRIX,$1, NULL, NULL, NULL, NULL)/*falta acomosart new_assigment_node*/;}
+		  | NAME EQUAL matrix 				 {$$ = new_assignment_node(ASSIGNMENT_MATRIX,$1, NULL, NULL, NULL, NULL)/*falta acomodar new_assigment_node*/;}
 		  ;
 
 assign_operation: EQUAL 		 {$$ = "=";}
