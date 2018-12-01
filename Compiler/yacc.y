@@ -196,15 +196,15 @@ return: RETURN expression {$$ = new_return_node(RETURN_EXPRESSION, NULL, $2);}
 	;
 
 condition: OPEN_PARENTHESES condition CLOSE_PARENTHESES {$$ = new_condition_node(CONDITION_PARENTHESES, NULL, NULL, NULL, $2);}
-	| expression EQUAL EQUAL expression {$$ = new_condition_node(CONDITION_LOGICAL, $1, "==", $4, NULL); }
-	| expression NOT_EQUAL expression {$$ = new_condition_node(CONDITION_LOGICAL, $1, "!=", $3, NULL); }
-	| expression GREATER_THAN expression {$$ = new_condition_node(CONDITION_LOGICAL, $1, ">", $3, NULL); }
-	| expression LESS_THAN expression {$$ = new_condition_node(CONDITION_LOGICAL, $1, "<", $3, NULL); }
-	| expression GREATER_OR_EQUAL expression {$$ = new_condition_node(CONDITION_LOGICAL, $1, ">=", $3, NULL); }
-	| expression LESS_OR_EQUAL expression {$$ = new_condition_node(CONDITION_LOGICAL, $1, "<=", $3, NULL); }
-	| expression {$$ = new_condition_node(CONDITION_EXPRESSION, $1, NULL, NULL, NULL);}
-	| condition OR condition {$$ = new_condition_node(CONDITION_LOGICAL, $1, "==", $3, NULL); }
-	| condition AND condition {$$ = new_condition_node(CONDITION_LOGICAL, $1, "&&", $3, NULL);}
+	| expression EQUAL EQUAL expression 				{$$ = new_condition_node(CONDITION_LOGICAL, $1, "==", $4, NULL); }
+	| expression NOT_EQUAL expression 					{$$ = new_condition_node(CONDITION_LOGICAL, $1, "!=", $3, NULL); }
+	| expression GREATER_THAN expression 				{$$ = new_condition_node(CONDITION_LOGICAL, $1, ">", $3, NULL); }
+	| expression LESS_THAN expression 					{$$ = new_condition_node(CONDITION_LOGICAL, $1, "<", $3, NULL); }
+	| expression GREATER_OR_EQUAL expression 			{$$ = new_condition_node(CONDITION_LOGICAL, $1, ">=", $3, NULL); }
+	| expression LESS_OR_EQUAL expression 				{$$ = new_condition_node(CONDITION_LOGICAL, $1, "<=", $3, NULL); }
+	| expression 										{$$ = new_condition_node(CONDITION_EXPRESSION, $1, NULL, NULL, NULL);}
+	| condition OR condition 							{$$ = new_condition_node(CONDITION_LOGICAL, $1, "==", $3, NULL); }
+	| condition AND condition 							{$$ = new_condition_node(CONDITION_LOGICAL, $1, "&&", $3, NULL);}
 	;
 	
 	
@@ -219,10 +219,10 @@ assign_operation: EQUAL 		 {$$ = "=";}
 				| MULTIPLY EQUAL {$$ = "*=";}
 				| DIVIDE EQUAL   {$$ = "/=";}
 	
-expression: BOOLEAN {$$ = new_expression_node(EXPRESSION_BOOLEAN, NULL, 0, NULL, NULL, $1, NULL); }
-		 | NAME {$$ = new_expression_node(EXPRESSION_VARIABLE, NULL, 0,  NULL, NULL, 0, $1); }
-		 | INTEGER {$$ = new_expression_node(EXPRESSION_INTEGER, NULL, 0, NULL, NULL, $1, NULL); }
-		 | matrix {/* no se si esta bien meter matrix aca 
+expression: BOOLEAN 					  {$$ = new_expression_node(EXPRESSION_BOOLEAN, NULL, 0, NULL, NULL, $1, NULL); }
+		 | NAME 						  {$$ = new_expression_node(EXPRESSION_VARIABLE, NULL, 0,  NULL, NULL, 0, $1); }
+		 | INTEGER  					  {$$ = new_expression_node(EXPRESSION_INTEGER, NULL, 0, NULL, NULL, $1, NULL); }
+		 | matrix   {/* no se si esta bien meter matrix aca 
 		 			  porque por ej: ¿se puede hacer 
 					  if(m == {{1,2,3},{4,5,6},{7,8,9}})??? */}
 		 | func_call 					  {$$ = new_expression_node(EXPRESSION_FUNCTION, NULL, 0, NULL, $1, 0, NULL); }
