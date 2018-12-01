@@ -2,6 +2,7 @@
 #define ALGO 2
 
 int main() {
-    int v=1;
-    
+    while(true){
+
+    }
 }
