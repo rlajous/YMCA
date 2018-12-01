@@ -57,7 +57,7 @@ extern int yylex();
 
 %token BOOLEAN_TYPE INTEGER_TYPE STRING_TYPE MATRIX_TYPE_START
 
-%token MAIN
+%token MAIN PRINTF
 
 %token <value> BOOLEAN
 %token <value> INTEGER
@@ -88,7 +88,7 @@ extern int yylex();
 %type <for_node> for
 %type <condition_node> condition
 %type <expression_node> expression
-%type <function_execute_node> func_call
+%type <function_execute_node> func_call printf
 %type <call_parameters_node> call_args call_params
 %type <call_parameter_node> call_param
 %type <return_node> return
@@ -183,8 +183,9 @@ var_operation: assignment {$$ = new_variable_operation_node(VARIABLE_ASSIGNMENT,
 	| NAME MINUS MINUS 	  {$$ = new_variable_operation_node(VARIABLE_DECREMENT, NULL, $1);}
 	;
 
-func_call: NAME OPEN_PARENTHESES call_args CLOSE_PARENTHESES {$$ = new_function_execute_node($1, $3);}
-	;
+func_call: NAME OPEN_PARENTHESES call_args CLOSE_PARENTHESES   {$$ = new_function_execute_node($1, $3);}
+		 | PRINTF OPEN_PARENTHESES call_args CLOSE_PARENTHESES {$$ = new_function_execute_node("printf", $3);}
+		 ;
 
 call_args: 			   {$$ = NULL; }
 		 | call_params {$$ = $1;}
@@ -195,7 +196,7 @@ call_params: call_param COMMA call_params {$$ = new_call_parameters_node($1, $3)
 	;	
 
 call_param: expression {$$ = new_call_parameter_node(PARAMETER_EXPRESSION, NULL, $1);}
-	| STRING 		   {$$ = new_call_parameter_node(PARAMERER_STRING, $1, NULL);}
+	| STRING 		   {$$ = new_call_parameter_node(PARAMETER_STRING, $1, NULL);}
 	;
 
 return: RETURN expression {$$ = new_return_node(RETURN_EXPRESSION, NULL, $2);}

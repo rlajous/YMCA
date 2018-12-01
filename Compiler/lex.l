@@ -42,6 +42,7 @@
 "matrix"                {return MATRIX_TYPE_START;}
 
 "main"                  {return MAIN;}
+"printf"                {return PRINTF;}
 
 "true"                  {yylval.value = 1; return BOOLEAN;}
 "false"                 {yylval.value = 0; return BOOLEAN;}

@@ -467,7 +467,7 @@ new_call_parameter_node(enum productions production,
 
 	node -> production = production;
 
-	if(production == PARAMERER_STRING){
+	if(production == PARAMETER_STRING){
 		char * string_aux = malloc(strlen(string) + 1);
 		strcpy(string_aux, string);
 		node -> string = string_aux;

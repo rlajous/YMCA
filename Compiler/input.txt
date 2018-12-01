@@ -1,7 +1,7 @@
-
 #define ALGO 2
 
 int main() {
-    int v=1;
-    
+    matrix m;
+    m = {{1,2,3},{4,5,6}};
+    printf("asd %m %s hcgxz", m, "asd");
 }

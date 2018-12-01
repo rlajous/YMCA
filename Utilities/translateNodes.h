@@ -51,6 +51,8 @@ void translateFunctionCall(sentence_node * sentence);
 
 int translateCallParameters(call_parameters_node * parameters, functionNode * function);
 
+int translateCallPrintfParameters(call_parameters_node *parameters);
+
 void translateCallParameter(call_parameter_node * parameter, type_node * expected);
 
 void translateVariableOperation(sentence_node * sentence);

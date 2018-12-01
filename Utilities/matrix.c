@@ -19,7 +19,7 @@ void freeMatrix(matrix mat){
 	free(mat);
 }
 
-matrix createMatrix(size_t w, size_t h, int t) {
+matrix createMatrix(size_t h, size_t w, int t) {
 	matrix mat = newMatrix();
 
 	switch(t) {

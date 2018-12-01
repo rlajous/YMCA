@@ -354,6 +354,10 @@ void translateWhile(while_node *whileNode)
 void translateFunctionCall(sentence_node *sentence)
 {
   function_execute_node *function = sentence->function_execute;
+  if(strcmp(function->name,"printf") == 0) {
+    translateCallPrintfParameters(function->parameters);
+    return;
+  }
   functionNode *fun = getFunction(function->name);
   if (fun == NULL)
   {
@@ -389,9 +393,93 @@ int translateCallParameters(call_parameters_node *parameters, functionNode *func
   return i;
 }
 
+int translateCallPrintfParameters(call_parameters_node *parameters)
+{
+  int i = 0;
+  call_parameters_node *next = parameters;
+  variableNode *variable;
+  char *str = calloc(strlen(next->parameter->string), sizeof(char));
+  strcpy(str, next->parameter->string + 1);
+  str[strlen(str)-1] = 0;
+  next = next->next;
+  if(next == NULL) {
+    fprintf(file, "printf(\"");
+    fprintf(file, "%s", str);
+    fprintf(file, "\");\n");
+    printf("1");
+    return i;
+  }
+  int pieces = 0;
+  for(int j=0; j<strlen(str); j++) {
+    if(str[j] == '%') {
+      pieces++;
+    }
+  }
+  char **strPieces = calloc((2*pieces+1),sizeof(char*));
+  int piece = 0;
+  strPieces[0] = calloc(strlen(str),sizeof(char));
+  for(int j=0; j<strlen(str); j++) {
+    char *concat = malloc(sizeof(char));
+    *concat = str[j];
+    if(str[j] == '%' && j-1 >= 0 && str[j-1] != '\\') {
+      strPieces[++piece] = calloc(2,sizeof(char));
+      
+      strcat(strPieces[piece], concat);
+      if(++j < strlen(str)) {
+        *concat = str[j];
+        strcat(strPieces[piece], concat);
+      }
+      strPieces[++piece] = calloc(strlen(str),sizeof(char));
+    } else {
+      strcat(strPieces[piece], concat);
+    }
+  }
+  while (next != NULL)
+  {
+    if(strPieces[i][0] != '%') {
+      printf("2\n");
+      fprintf(file, "printf(\"");
+      fprintf(file, "%s", strPieces[i]);
+      fprintf(file, "\");\n");
+    } else if(strPieces[i][1] == 'm') {
+      printf("3\n");
+      fprintf(file, "printf(\"\\n\");\n");
+      fprintf(file, "printMatrix(");
+      if(next->parameter->expression == NULL) {
+        fprintf(file, "%s", next->parameter->string);
+      } else {
+        translateExpression(next->parameter->expression);
+      }
+      fprintf(file, ");\n");
+      next = next->next;
+    } else {
+      printf("4\n");
+      fprintf(file, "printf(\"");
+      fprintf(file, "%s", strPieces[i]);
+      fprintf(file, "\", ");
+      if(next->parameter->expression == NULL) {
+        fprintf(file, "%s", next->parameter->string);
+      } else {
+        translateExpression(next->parameter->expression);
+      }
+      fprintf(file, ");\n");
+      next = next->next;
+    }
+    i++;
+  }
+  if(i == piece && strlen(strPieces[i]) > 0) {
+    printf("5\n");
+    fprintf(file, "printf(\"");
+    fprintf(file, "%s", strPieces[i]);
+    fprintf(file, "\");\n");
+  }
+  fprintf(file, "printf(\"\\n\");\n");
+  return i;
+}
+
 void translateCallParameter(call_parameter_node *parameter, type_node *expected)
 {
-  if (parameter->production == PARAMERER_STRING)
+  if (parameter->production == PARAMETER_STRING)
   {
     if (expected->basicType != STRING_T || expected->compoundType != NONE)
     {
@@ -467,7 +555,7 @@ void translateElementList(assignment_node *assignment)
   while (next != NULL)
   {
     row_node *row = next->row;
-
+    c=0;
     while (row != NULL)
     {
       fprintf(file, "addValue(%d, %d, %d, %s);\n", r, c, row->value, assignment->name);
