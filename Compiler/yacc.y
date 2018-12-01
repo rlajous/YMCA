@@ -168,11 +168,11 @@ else: ELSE OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES															   {$$ = new_
 				| ELSE OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES else {$$ = new_if_node($3, $6, $8); }
 				| /* empty */{$$ = NULL;}
 
-declaration: type NAME 		 {$$ = new_declaration_node($1, $2);}
+declaration: 	type NAME 		 {$$ = new_declaration_node($1, $2);}
+			|	type NAME assign_operation expression	{$$ = new_declaration_node($1, $2); new_assignment_node(ASSIGNMENT_EXPRESSION, $2, NULL, NULL, $3, $4); }
 		   ;
 
 var_operation: assignment {$$ = new_variable_operation_node(VARIABLE_ASSIGNMENT, $1, NULL);}
-	| type assignment 	  {/*TODO: no esta bien todavia*/new_declaration_node($1, $2->name); $$ = new_variable_operation_node(VARIABLE_ASSIGNMENT, $2, NULL);}
 	| NAME PLUS PLUS 	  {$$ = new_variable_operation_node(VARIABLE_INCREMENT, NULL, $1);}
 	| NAME MINUS MINUS 	  {$$ = new_variable_operation_node(VARIABLE_DECREMENT, NULL, $1);}
 	;
@@ -208,7 +208,7 @@ condition: OPEN_PARENTHESES condition CLOSE_PARENTHESES {$$ = new_condition_node
 	;
 	
 	
-assignment: NAME assign_operation expression {$$ = new_assignment_node(ASSIGNMENT_EXPRESSION, $1, NULL, NULL, $2, $3);}
+assignment: NAME assign_operation expression	{$$ = new_assignment_node(ASSIGNMENT_EXPRESSION, $1, NULL, NULL, $2, $3);}
 		  | NAME EQUAL STRING 				 {$$ = new_assignment_node(ASSIGNMENT_STRING, $1, $3, NULL, NULL, NULL);}
 		  | NAME EQUAL matrix 				 {$$ = new_assignment_node(ASSIGNMENT_MATRIX,$1, NULL, NULL, NULL, NULL)/*falta acomosart new_assigment_node*/;}
 		  ;
