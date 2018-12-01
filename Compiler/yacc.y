@@ -104,6 +104,7 @@ program: defines functions {$$ = new_program_node($1, $2); translateProgramNode(
 defines: define defines {$$ = new_defines_node($1, $2);}
 	| /* lambda */ {$$ = NULL; createFunction();}
 	;
+
 define: DEFINE NAME BOOLEAN {$$ = new_define_node(DEFINE_INTEGER, $2, $3, NULL);}
 	| DEFINE NAME INTEGER {$$ = new_define_node(DEFINE_INTEGER, $2, $3, NULL);}
 	| DEFINE NAME STRING {$$ = new_define_node(DEFINE_STRING, $2, 0, $3);}
@@ -118,14 +119,14 @@ function: type NAME OPEN_PARENTHESES args CLOSE_PARENTHESES OPEN_CURLY_BRACES bo
 
 main: type MAIN OPEN_PARENTHESES CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {$$ = new_function_node($1, "main", NULL, $6);} 
 
-matrix_type: MATRIX_TYPE_START LESS_THAN INTEGER_TYPE GREATER_THAN
-		   | MATRIX_TYPE_START LESS_THAN BOOLEAN_TYPE GREATER_THAN
-		   | MATRIX_TYPE_START LESS_THAN STRING_TYPE  GREATER_THAN
+matrix_type: MATRIX_TYPE_START LESS_THAN INTEGER_TYPE GREATER_THAN {$$ = new_type_node(INTEGER_T, MATRIX_T);}
+		   | MATRIX_TYPE_START LESS_THAN BOOLEAN_TYPE GREATER_THAN {$$ = new_type_node(BOOLEAN_T, MATRIX_T);}
+		   | MATRIX_TYPE_START LESS_THAN STRING_TYPE  GREATER_THAN {$$ = new_type_node(STRING_T, MATRIX_T);}
 
-type: INTEGER_TYPE {$$ = INTEGER_T;}
-	| BOOLEAN_TYPE {$$ = BOOLEAN_T;}
-	| STRING_TYPE {$$ = STRING_T;}
-	| matrix_type {$$ = MATRIX_T;}
+type: INTEGER_TYPE {$$ = new_type_node(INTEGER_T,NONE);}
+	| BOOLEAN_TYPE {$$ = new_type_node(BOOLEAN_T,NONE);}
+	| STRING_TYPE {$$ = new_type_node(STRING_T,NONE);}
+	| matrix_type {$$ = $1;}
 	;
 
 args: params {$$ = $1;}
