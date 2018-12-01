@@ -169,10 +169,10 @@ else: ELSE OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES															   {$$ = new_
 				| /* empty */{$$ = NULL;}
 
 declaration: type NAME 		 {$$ = new_declaration_node($1, $2);}
-		   | type assignment {$$ = new_declaration_node($1, $2);}
 		   ;
 
 var_operation: assignment {$$ = new_variable_operation_node(VARIABLE_ASSIGNMENT, $1, NULL);}
+	| type assignment 	  {/*TODO: no esta bien todavia*/new_declaration_node($1, $2->name); $$ = new_variable_operation_node(VARIABLE_ASSIGNMENT, $2, NULL);}
 	| NAME PLUS PLUS 	  {$$ = new_variable_operation_node(VARIABLE_INCREMENT, NULL, $1);}
 	| NAME MINUS MINUS 	  {$$ = new_variable_operation_node(VARIABLE_DECREMENT, NULL, $1);}
 	;
@@ -195,17 +195,17 @@ call_param: expression {$$ = new_call_parameter_node(PARAMETER_EXPRESSION, NULL,
 return: RETURN expression {$$ = new_return_node(RETURN_EXPRESSION, NULL, $2);}
 	;
 
-condition: BOOLEAN 										{}
-		 | OPEN_PARENTHESES condition CLOSE_PARENTHESES {$$ = new_condition_node(CONDITION_PARENTHESES, NULL, NULL, NULL, $2);}
-		 | expression EQUAL EQUAL expression 			{}
-		 | expression NOT_EQUAL expression 				{}
-		 | expression GREATER_THAN expression 			{}
-		 | expression LESS_THAN expression 				{}
-		 | expression GREATER_OR_EQUAL expression 		{}
-		 | expression LESS_OR_EQUAL expression 			{}
-		 | condition OR condition 						{}
-		 | condition AND condition 						{}
-		 ;
+condition: OPEN_PARENTHESES condition CLOSE_PARENTHESES {$$ = new_condition_node(CONDITION_PARENTHESES, NULL, NULL, NULL, $2);}
+	| expression EQUAL EQUAL expression {$$ = new_condition_node(CONDITION_LOGICAL, $1, "==", $4, NULL); }
+	| expression NOT_EQUAL expression {$$ = new_condition_node(CONDITION_LOGICAL, $1, "!=", $3, NULL); }
+	| expression GREATER_THAN expression {$$ = new_condition_node(CONDITION_LOGICAL, $1, ">", $3, NULL); }
+	| expression LESS_THAN expression {$$ = new_condition_node(CONDITION_LOGICAL, $1, "<", $3, NULL); }
+	| expression GREATER_OR_EQUAL expression {$$ = new_condition_node(CONDITION_LOGICAL, $1, ">=", $3, NULL); }
+	| expression LESS_OR_EQUAL expression {$$ = new_condition_node(CONDITION_LOGICAL, $1, "<=", $3, NULL); }
+	| expression {$$ = new_condition_node(CONDITION_EXPRESSION, $1, NULL, NULL, NULL);}
+	| condition OR condition {$$ = new_condition_node(CONDITION_LOGICAL, $1, "==", $3, NULL); }
+	| condition AND condition {$$ = new_condition_node(CONDITION_LOGICAL, $1, "&&", $3, NULL);}
+	;
 	
 	
 assignment: NAME assign_operation expression {$$ = new_assignment_node(ASSIGNMENT_EXPRESSION, $1, NULL, NULL, $2, $3);}
@@ -219,9 +219,9 @@ assign_operation: EQUAL 		 {$$ = "=";}
 				| MULTIPLY EQUAL {$$ = "*=";}
 				| DIVIDE EQUAL   {$$ = "/=";}
 	
-expression: BOOLEAN 					  {$$ = new_expression_node(BOOLEAN, NULL, 0, NULL, NULL, $1, NULL); }
-		 | NAME 						  {$$ = new_expression_node(EXPRESSION_VARIABLE, NULL, 0,  NULL, NULL, 0, $1); }
-		 | INTEGER 						  {$$ = new_expression_node(EXPRESSION_INTEGER, NULL, 0, NULL, NULL, $1, NULL); }
+expression: BOOLEAN {$$ = new_expression_node(EXPRESSION_BOOLEAN, NULL, 0, NULL, NULL, $1, NULL); }
+		 | NAME {$$ = new_expression_node(EXPRESSION_VARIABLE, NULL, 0,  NULL, NULL, 0, $1); }
+		 | INTEGER {$$ = new_expression_node(EXPRESSION_INTEGER, NULL, 0, NULL, NULL, $1, NULL); }
 		 | matrix {/* no se si esta bien meter matrix aca 
 		 			  porque por ej: ¿se puede hacer 
 					  if(m == {{1,2,3},{4,5,6},{7,8,9}})??? */}

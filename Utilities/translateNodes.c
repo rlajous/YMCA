@@ -14,7 +14,7 @@ void translateProgramNode(program_node * program) {
 	  fprintf(file,"#include <stdio.h>\n");
 	  fprintf(file,"#include <stdlib.h>\n");
 	  fprintf(file,"#include <string.h>\n");
-	  fprintf(file,"#include \"../Utilities/linkedList.h\"\n\n");
+	  fprintf(file,"#include \"../Utilities/matrix.h\"\n\n");
 
     translateDefines(program->defines);
     fprintf(file, "\n");
