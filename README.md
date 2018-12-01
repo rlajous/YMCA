@@ -10,11 +10,9 @@ make all
 #### Compile the .ymca file:
 ./compiler.sh your_input_file.ymca
 
+
 #### Run the compiled .ymca file:
 ./executable
 
-## In pampero, bash scripts can't be run, so we can do:
-make all
-cat input.ymca | ./Compiler/parser
-gcc -o executable ./Compiler/compiled.c ./Utilities/matrix.c
-./executable
+## You may not have permission to run the bash script:
+chmod +x ./compiler.sh
