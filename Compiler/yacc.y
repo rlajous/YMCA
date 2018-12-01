@@ -88,7 +88,7 @@ extern int yylex();
 %type <for_node> for
 %type <condition_node> condition
 %type <expression_node> expression
-%type <function_execute_node> func_call printf
+%type <function_execute_node> func_call
 %type <call_parameters_node> call_args call_params
 %type <call_parameter_node> call_param
 %type <return_node> return
