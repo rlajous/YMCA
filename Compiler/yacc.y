@@ -220,7 +220,7 @@ assign_operation: EQUAL {$$ = "=";}
 				| MULTIPLY EQUAL {$$ = "*=";}
 				| DIVIDE EQUAL {$$ = "/=";}
 	
-expression: BOOLEAN {}
+expression: BOOLEAN {$$ = new_expression_node(EXPRESSION_BOOLEAN, NULL, 0, NULL, NULL, $1, NULL); }
 		 | NAME {$$ = new_expression_node(EXPRESSION_VARIABLE, NULL, 0,  NULL, NULL, 0, $1); }
 		 | INTEGER {$$ = new_expression_node(EXPRESSION_INTEGER, NULL, 0, NULL, NULL, $1, NULL); }
 		 | matrix {/* no se si esta bien meter matrix aca 
