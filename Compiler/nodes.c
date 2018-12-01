@@ -64,6 +64,9 @@ new_type_node(basicTypes basicType, compoundTypes compoundType){
 
 	node -> basicType = basicType;
 	node -> compoundType = compoundType;
+
+	return node;
+
 }
 
 functions_node*
@@ -171,6 +174,7 @@ new_declaration_node(type_node * type, char * name){
 	node -> type = type;
 	node -> name = name_aux;
 
+	return node;
 }
 
 variable_operation_node*
@@ -183,7 +187,7 @@ new_variable_operation_node(enum productions production, assignment_node * assig
 		node -> assignment = assignment;
 		node -> increment_decrement_name = NULL;
 	}else if(production == VARIABLE_INCREMENT || production == VARIABLE_DECREMENT){
-		node -> assignment == NULL;
+		node -> assignment = NULL;
 		name_aux = malloc(strlen(increment_decrement_name) + 1);
 		strcpy(name_aux, increment_decrement_name);
 		node -> increment_decrement_name = name_aux;
@@ -195,7 +199,7 @@ new_variable_operation_node(enum productions production, assignment_node * assig
 
 assignment_node*
 new_assignment_node(enum productions production, char * name,
-	char * string, queue_stack_node * queue_stack, char* assignment_operation,
+	char * string, matrix_node * matrix, char* assignment_operation,
 	expression_node * expression){
 
 	assignment_node * node = malloc(sizeof(assignment_node));
@@ -210,7 +214,7 @@ new_assignment_node(enum productions production, char * name,
 		char * string_aux = malloc(strlen(string) + 1);
 		strcpy(string_aux, string);
 		node -> string = string_aux;
-		node -> queue_stack = NULL;
+		node -> matrix = NULL;
 		node -> assignment_operation = NULL;
 		node -> expression = NULL;
 		int exists = existsVariableTyped(name_aux, STRING_T, NONE);
@@ -218,10 +222,10 @@ new_assignment_node(enum productions production, char * name,
 			error(INCOMPATIBLE_TYPE);
 		else if(exists == 0)
 			error(VARIABLE_NOT_DEFINED);
-	}else if(production == ASSIGNMENT_QUEUE || production == ASSIGNMENT_STACK){
+	}else if(production == ASSIGNMENT_MATRIX){
 
 		node -> string = NULL;
-		node -> queue_stack = queue_stack;
+		node -> matrix = matrix;
 		node -> assignment_operation = NULL;
 		node -> expression = NULL;
 		if(!existsVariable(name_aux))
@@ -229,7 +233,7 @@ new_assignment_node(enum productions production, char * name,
 	}else if(production == ASSIGNMENT_EXPRESSION){
 
 		node -> string = NULL;
-		node -> queue_stack = NULL;
+		node -> matrix = NULL;
 
 		char * assignment_operation_aux = malloc(strlen(assignment_operation) + 1);
 		strcpy(assignment_operation_aux, assignment_operation);
@@ -248,48 +252,55 @@ new_assignment_node(enum productions production, char * name,
 	return node;
 }
 
-queue_stack_node *
-new_queue_stack_node(elements_node * elements){
+matrix_node *
+new_matrix_node(rows_node * rows){
 
-	queue_stack_node * node = malloc(sizeof(queue_stack_node));
+	matrix_node * node = malloc(sizeof(matrix_node));
 
-	node -> elements = elements;
+	node -> rows = rows;
+	node -> cols = rows->cols;
+	node -> rowsnum = rows-> rownum; 
 
 	return node;
 }
 
-elements_node *
-new_elements_node (element_node * element, elements_node * next){
+rows_node *
+new_rows_node (row_node * row, rows_node * next){
+	rows_node * node = malloc(sizeof(rows_node));
+	if(next == NULL){
+		node->rownum = 1;
+	}else{
+		node->rownum = next->rownum +1;
+		if(row->col != next->cols){
+		error(CANT_COLS_ERROR);
+	}
 
-	elements_node * node = malloc(sizeof(elements_node));
+	}
 
-	node -> element = element;
+	node -> row = row;
+	node -> cols = row -> col;
 	node -> next = next;
 
 	return node;
 }
 
-element_node *
-new_element_node(enum productions production, int value, char * string_name){
+row_node *
+new_row_node (int value, row_node * next){
 
-	element_node * node = malloc(sizeof(element_node));
+	row_node * node = malloc(sizeof(row_node));
 
-	node -> production = production;
+	node -> value = value;
+	node -> next = next;
 
-	if(production == ELEMENT_BOOLEAN || production == ELEMENT_INTEGER){
-		node -> value = value;
-		node -> string_name = NULL;
-	}else if(production == ELEMENT_STRING || production == ELEMENT_VARIABLE){
-		node -> value = 0;
-		char * string_name_aux = malloc(strlen(string_name) + 1);
-		strcpy(string_name_aux, string_name);
-		node -> string_name = string_name_aux;
+	if(next == NULL){
+		node->col = 1;
 	}else{
-		error(INCOMPATIBLE);
+		node->col = next->col + 1;
 	}
 
 	return node;
 }
+
 
 if_node *
 new_if_node(condition_node * condition, sentences_node * sentences, if_node * else_branch){
@@ -431,6 +442,8 @@ new_function_execute_node(char * name, call_parameters_node * parameters){
 
 	node -> name = name_aux;
 	node -> parameters = parameters;
+
+	return node;
 }
 
 call_parameters_node *
@@ -502,6 +515,8 @@ void error(errorType type) {
 		case ERROR_ARGUMENTS: printf("Error, wrong arguments for function\n"); break;
 		case FUNCTION_NOT_DEFINED: printf("Error, function not defined\n"); break;
 		case NOT_VALID_OPERATION: printf("Error, a non valid operation was performed\n"); break;
+		case CANT_COLS_ERROR: printf("Error, the amount of columns in two rows don't match\n"); break;
+		case BAD_FOR_ERROR: printf("Error, wrong for declaration \n"); break;
 	}
 	exit(2);
 }

@@ -4,7 +4,7 @@
 enum productions
 {
 	DEFINE_INTEGER, DEFINE_STRING, SENTENCE_DECLARATION, SENTENCE_VARIABLE, SENTENCE_FOR, SENTENCE_WHILE, SENTENCE_IF, SENTENCE_FUNCTION, SENTENCE_RETURN,
-	VARIABLE_ASSIGNMENT, VARIABLE_INCREMENT, VARIABLE_DECREMENT, ASSIGNMENT_STRING, ASSIGNMENT_MATRIX, ASSIGNMENT_QUEUE, ASSIGNMENT_STACK, ASSIGNMENT_EXPRESSION,
+	VARIABLE_ASSIGNMENT, VARIABLE_INCREMENT, VARIABLE_DECREMENT, ASSIGNMENT_STRING, ASSIGNMENT_MATRIX, ASSIGNMENT_EXPRESSION,
 	ELEMENT_BOOLEAN, ELEMENT_STRING, ELEMENT_VARIABLE, ELEMENT_INTEGER, REGULAR_FOR, CONDITION_LOGICAL, CONDITION_EXPRESSION, CONDITION_PARENTHESES,
 	EXPRESSION_BOOLEAN, EXPRESSION_VARIABLE, EXPRESSION_INTEGER, EXPRESSION_FUNCTION, EXPRESSION_OPERATION, PARAMERER_STRING, PARAMETER_EXPRESSION,
 	RETURN_STRING, RETURN_EXPRESSION
@@ -12,9 +12,9 @@ enum productions
 
 typedef enum {INTEGER_T, BOOLEAN_T, STRING_T} basicTypes;
 
-typedef enum {QUEUE_T = 4, STACK_T, MATRIX_T, NONE} compoundTypes;
+typedef enum {MATRIX_T = 4, NONE} compoundTypes;
 
-typedef enum {FUNCTION_REPETITION_ERROR, VARIABLE_REPETITION, INCOMPATIBLE, INCOMPATIBLE_TYPE, VARIABLE_NOT_DEFINED, ERROR_ARGUMENTS, FUNCTION_NOT_DEFINED, NOT_VALID_OPERATION} errorType;
+typedef enum {FUNCTION_REPETITION_ERROR, VARIABLE_REPETITION, INCOMPATIBLE, INCOMPATIBLE_TYPE, VARIABLE_NOT_DEFINED, ERROR_ARGUMENTS, FUNCTION_NOT_DEFINED, NOT_VALID_OPERATION, CANT_COLS_ERROR, BAD_FOR_ERROR} errorType;
 
 	typedef struct program_node{
 		struct defines_node * defines;
@@ -89,26 +89,29 @@ typedef enum {FUNCTION_REPETITION_ERROR, VARIABLE_REPETITION, INCOMPATIBLE, INCO
 		enum productions production;
 		char *name;
 		char *string;
-		struct queue_stack_node *queue_stack;
+		struct matrix_node *matrix;
 		char *assignment_operation;
 		struct expression_node *expression;
 	}assignment_node;
 
-	typedef struct queue_stack_node{
-		struct elements_node *elements;
-	}queue_stack_node;
+	typedef struct matrix_node{
+		struct rows_node * rows;
+		int cols;
+		int rowsnum;
+	}matrix_node;
 
-	typedef struct elements_node{
-		struct element_node *element;
-		struct elements_node *next;
-	}elements_node;
+	typedef struct rows_node{
+		struct row_node * row;
+		int cols;
+		int rownum;
+		struct rows_node * next;
+	}rows_node;
 
-	/*no es el nombre de la variable si no lo que se le asigna en si */
-	typedef struct element_node{
-		enum productions production;
-		char *string_name;
+	typedef struct row_node{
 		int value;
-	}element_node;
+		int col;
+		struct row_node *next;
+	}row_node;
 
 	typedef struct if_node{
 		struct condition_node *condition;
@@ -195,13 +198,13 @@ declaration_node *	new_declaration_node(type_node * type, char * name);
 variable_operation_node*	new_variable_operation_node(enum productions production, assignment_node * assignment, char * increment_decrement_name);
 
 assignment_node* new_assignment_node(enum productions production, char * name,
-	char * string, queue_stack_node * queue_stack, char* assignment_operation, expression_node * expression);
+	char * string, matrix_node * matrix, char* assignment_operation, expression_node * expression);
 
-queue_stack_node * new_queue_stack_node(elements_node * elements);
+matrix_node * new_matrix_node(rows_node * rows);
 
-elements_node *	new_elements_node (element_node * element, elements_node * next);
+rows_node * new_rows_node (row_node * row, rows_node * next);
 
-element_node * new_element_node(enum productions production, int value, char * string_name);
+row_node * new_row_node (int value, row_node * next);
 
 if_node *	new_if_node(condition_node * condition, sentences_node * sentences, if_node * else_branch);
 

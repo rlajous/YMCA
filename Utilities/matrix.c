@@ -191,14 +191,14 @@ matrix mulMatrix( matrix a, matrix b) {
 matrix transMatrix(matrix a){
 
 	matrix mat;
-	
+	int i,k;
 	mat = createMatrix(a->width, a->height, a->type);
 
 	int * m = a->mtrx;
 
 	for(i = 0; i < a->width; i++) {
 		for(k = 0; k < a->height; k++) {
-			addValue(i, k,  m[k*a->width + i] * e, mat);
+			addValue(i, k,  m[k*a->width + i], mat);
 		}
 	}
 	
@@ -206,6 +206,29 @@ matrix transMatrix(matrix a){
 
 }
 
+void printMatrix(matrix m){
+	int i, k;
 
+	int * a = m->mtrx;
+
+	
+	for(i = 0; i < m->height; i++) {
+
+		for(k = 0; k < m->width; k++) {
+			printf("%d",a[i*m->width + k]);
+			if(k != m->width - 1){
+				printf(", ");
+			}
+		}
+
+		printf("\n");
+	
+	}
+
+	
+
+
+
+}
 
 

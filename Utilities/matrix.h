@@ -30,5 +30,7 @@ matrix mulMatrix( matrix a, matrix b);
 
 matrix transMatrix(matrix a);
 
+void printMatrix(matrix m);
+
 
 #endif

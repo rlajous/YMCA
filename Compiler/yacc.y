@@ -32,8 +32,6 @@ extern int yylex();
   	declaration_node * declaration_node;
   	variable_operation_node* variable_operation_node;
   	assignment_node* assignment_node;
-  	elements_node* elements_node;
-  	element_node* element_node;
   	if_node* if_node;
   	while_node* while_node;
   	for_node* for_node;
@@ -43,6 +41,10 @@ extern int yylex();
   	call_parameters_node* call_parameters_node;
   	call_parameter_node* call_parameter_node;
   	return_node* return_node;
+	row_node* numbers_node;
+	rows_node* sub_matrix_node;
+	matrix_node* matrix_node;
+
   }
 
 
@@ -90,6 +92,9 @@ extern int yylex();
 %type <call_parameters_node> call_args call_params
 %type <call_parameter_node> call_param
 %type <return_node> return
+%type <numbers_node> numbers
+%type <sub_matrix_node> sub_matrix
+%type <matrix_node> matrix
 
  /* terminals go from lowest precedence to highest */
 %left PLUS MINUS 		  /* lowest precedence *//* left associative */
@@ -119,10 +124,10 @@ function: type NAME OPEN_PARENTHESES args CLOSE_PARENTHESES OPEN_CURLY_BRACES bo
 	;
 
 main: type MAIN OPEN_PARENTHESES CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {$$ = new_function_node($1, "main", NULL, $6);} 
+	;
 
-matrix_type: MATRIX_TYPE_START LESS_THAN INTEGER_TYPE GREATER_THAN {$$ = new_type_node(INTEGER_T, MATRIX_T);}
-		   | MATRIX_TYPE_START LESS_THAN BOOLEAN_TYPE GREATER_THAN {$$ = new_type_node(BOOLEAN_T, MATRIX_T);}
-		   | MATRIX_TYPE_START LESS_THAN STRING_TYPE  GREATER_THAN {$$ = new_type_node(STRING_T, MATRIX_T);}
+matrix_type: MATRIX_TYPE_START {$$ = new_type_node(INTEGER_T, MATRIX_T);}
+		   ;
 
 type: INTEGER_TYPE {$$ = new_type_node(INTEGER_T,NONE);}
 	| BOOLEAN_TYPE {$$ = new_type_node(BOOLEAN_T,NONE);}
@@ -167,6 +172,7 @@ if: IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE
 else: ELSE OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES															   {$$ = new_if_node(NULL, $3, NULL); }
 				| ELSE OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES else {$$ = new_if_node($3, $6, $8); }
 				| /* empty */{$$ = NULL;}
+				;
 
 declaration: 	type NAME 		 {$$ = new_declaration_node($1, $2);}
 			|	type NAME assign_operation expression	{$$ = new_declaration_node($1, $2); new_assignment_node(ASSIGNMENT_EXPRESSION, $2, NULL, NULL, $3, $4); }
@@ -209,9 +215,9 @@ condition: OPEN_PARENTHESES condition CLOSE_PARENTHESES {$$ = new_condition_node
 	;
 	
 	
-assignment: NAME assign_operation expression	{$$ = new_assignment_node(ASSIGNMENT_EXPRESSION, $1, NULL, NULL, $2, $3);}
-		  | NAME EQUAL STRING 				 {$$ = new_assignment_node(ASSIGNMENT_STRING, $1, $3, NULL, NULL, NULL);}
-		  | NAME EQUAL matrix 				 {$$ = new_assignment_node(ASSIGNMENT_MATRIX,$1, NULL, NULL, NULL, NULL)/*falta acomodar new_assigment_node*/;}
+assignment: NAME assign_operation expression {$$ = new_assignment_node(ASSIGNMENT_EXPRESSION, $1, NULL, NULL, $2, $3);}
+		  | NAME EQUAL STRING {$$ = new_assignment_node(ASSIGNMENT_STRING, $1, $3, NULL, NULL, NULL);}
+		  | NAME EQUAL matrix {$$ = new_assignment_node(ASSIGNMENT_MATRIX, $1, NULL, $3, NULL, NULL);}
 		  ;
 
 assign_operation: EQUAL 		 {$$ = "=";}
@@ -219,13 +225,11 @@ assign_operation: EQUAL 		 {$$ = "=";}
 				| MINUS EQUAL	 {$$ = "-=";}
 				| MULTIPLY EQUAL {$$ = "*=";}
 				| DIVIDE EQUAL   {$$ = "/=";}
+				;
 	
 expression: BOOLEAN 					  {$$ = new_expression_node(EXPRESSION_BOOLEAN, NULL, 0, NULL, NULL, $1, NULL); }
 		 | NAME 						  {$$ = new_expression_node(EXPRESSION_VARIABLE, NULL, 0,  NULL, NULL, 0, $1); }
 		 | INTEGER  					  {$$ = new_expression_node(EXPRESSION_INTEGER, NULL, 0, NULL, NULL, $1, NULL); }
-		 | matrix   {/* no se si esta bien meter matrix aca 
-		 			  porque por ej: ¿se puede hacer 
-					  if(m == {{1,2,3},{4,5,6},{7,8,9}})??? */}
 		 | func_call 					  {$$ = new_expression_node(EXPRESSION_FUNCTION, NULL, 0, NULL, $1, 0, NULL); }
 		 | expression PLUS expression 	  {$$ = new_expression_node(EXPRESSION_OPERATION, $1, '+', $3, NULL, 0, NULL); }
 		 | expression MINUS expression	  {$$ = new_expression_node(EXPRESSION_OPERATION, $1, '-', $3, NULL, 0, NULL); }
@@ -234,18 +238,16 @@ expression: BOOLEAN 					  {$$ = new_expression_node(EXPRESSION_BOOLEAN, NULL, 0
 		 | expression MULTIPLY expression {$$ = new_expression_node(EXPRESSION_OPERATION, $1, '*', $3, NULL, 0, NULL); }
 		 ;
 
-matrix: OPEN_BRACKET sub_matrix CLOSE_BRACKET {}
-	  | OPEN_BRACKET numbers    CLOSE_BRACKET {}
+matrix: OPEN_CURLY_BRACES sub_matrix CLOSE_CURLY_BRACES {$$ = new_matrix_node($2);}
+	  | OPEN_CURLY_BRACES numbers    CLOSE_CURLY_BRACES {$$ = new_matrix_node(new_rows_node($2,NULL));}
 	  ;
 
-sub_matrix: OPEN_BRACKET numbers CLOSE_BRACKET COMMA sub_matrix {}
-		  | OPEN_BRACKET numbers CLOSE_BRACKET COMMA 			{}
-		  | OPEN_BRACKET numbers CLOSE_BRACKET 					{}
+sub_matrix: OPEN_CURLY_BRACES numbers CLOSE_CURLY_BRACES COMMA sub_matrix {$$ = new_rows_node($2, $5);}
+		  | OPEN_CURLY_BRACES numbers CLOSE_CURLY_BRACES {$$ = new_rows_node($2, NULL);}
 		  ;
 		
-numbers: INTEGER COMMA numbers {}
-	   | INTEGER COMMA		   {}
-	   | INTEGER 			   {}
+numbers: INTEGER COMMA numbers {$$ = new_row_node($1, $3); }
+	   | INTEGER {$$ = new_row_node($1, NULL); }
 
 %%
 int main()

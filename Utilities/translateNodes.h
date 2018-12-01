@@ -19,8 +19,6 @@ void translateFunctionDefinition(functionNode * function);
 
 void translateDeclaration(sentence_node * sentence);
 
-void translateQueueStackOperations(variableNode * structure, int add);
-
 void translateParameters(variableList * arguments);
 
 void translateFunctions(functions_node * functions);
@@ -59,13 +57,11 @@ void translateVariableOperation(sentence_node * sentence);
 
 void translateAssignment(assignment_node * assignment);
 
-void translateQueueStack(assignment_node * assignment);
+void translateMatrix(assignment_node * assignment);
 
 void translateElementList(assignment_node * assignment);
 
 void translateReturn(sentence_node * sentence);
-
-void translateSentenceEnd(sentence_node * sentence);
 
 type_node * getExpressionType(expression_node * expression);
 
