@@ -406,7 +406,6 @@ int translateCallPrintfParameters(call_parameters_node *parameters)
     fprintf(file, "printf(\"");
     fprintf(file, "%s", str);
     fprintf(file, "\");\n");
-    printf("1");
     return i;
   }
   int pieces = 0;
@@ -437,12 +436,10 @@ int translateCallPrintfParameters(call_parameters_node *parameters)
   while (next != NULL)
   {
     if(strPieces[i][0] != '%') {
-      printf("2\n");
       fprintf(file, "printf(\"");
       fprintf(file, "%s", strPieces[i]);
       fprintf(file, "\");\n");
     } else if(strPieces[i][1] == 'm') {
-      printf("3\n");
       fprintf(file, "printf(\"\\n\");\n");
       fprintf(file, "printMatrix(");
       if(next->parameter->expression == NULL) {
@@ -453,7 +450,6 @@ int translateCallPrintfParameters(call_parameters_node *parameters)
       fprintf(file, ");\n");
       next = next->next;
     } else {
-      printf("4\n");
       fprintf(file, "printf(\"");
       fprintf(file, "%s", strPieces[i]);
       fprintf(file, "\", ");
@@ -468,7 +464,6 @@ int translateCallPrintfParameters(call_parameters_node *parameters)
     i++;
   }
   if(i == piece && strlen(strPieces[i]) > 0) {
-    printf("5\n");
     fprintf(file, "printf(\"");
     fprintf(file, "%s", strPieces[i]);
     fprintf(file, "\");\n");
