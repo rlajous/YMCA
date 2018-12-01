@@ -176,6 +176,8 @@ else: ELSE OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES															   {$$ = new_
 
 declaration: 	type NAME 		 {$$ = new_declaration_node($1, $2);}
 			|	type NAME assign_operation expression	{$$ = new_declaration_node($1, $2); new_assignment_node(ASSIGNMENT_EXPRESSION, $2, NULL, NULL, $3, $4); }
+		   	|	type NAME EQUAL STRING {$$ = new_declaration_node($1, $2); new_assignment_node(ASSIGNMENT_STRING, $2, $4, NULL, NULL, NULL); }
+		   	|	type NAME EQUAL matrix {$$ = new_declaration_node($1, $2); new_assignment_node(ASSIGNMENT_MATRIX, $2, NULL, $4, NULL, NULL); }
 		   ;
 
 var_operation: assignment {$$ = new_variable_operation_node(VARIABLE_ASSIGNMENT, $1, NULL);}
