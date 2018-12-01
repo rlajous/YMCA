@@ -210,6 +210,7 @@ condition: BOOLEAN 										{}
 	
 assignment: NAME assign_operation expression {$$ = new_assignment_node(ASSIGNMENT_EXPRESSION, $1, NULL, NULL, $2, $3);}
 		  | NAME EQUAL STRING 				 {$$ = new_assignment_node(ASSIGNMENT_STRING, $1, $3, NULL, NULL, NULL);}
+		  | NAME EQUAL matrix 				 {$$ = new_assignment_node(ASSIGNMENT_MATRIX,$1, NULL, NULL, NULL, NULL)/*falta acomosart new_assigment_node*/;}
 		  ;
 
 assign_operation: EQUAL 		 {$$ = "=";}
@@ -234,14 +235,16 @@ expression: BOOLEAN 					  {$$ = new_expression_node(BOOLEAN, NULL, 0, NULL, NUL
 
 matrix: OPEN_BRACKET sub_matrix CLOSE_BRACKET {}
 	  | OPEN_BRACKET numbers    CLOSE_BRACKET {}
+	  ;
 
 sub_matrix: OPEN_BRACKET numbers CLOSE_BRACKET COMMA sub_matrix {}
 		  | OPEN_BRACKET numbers CLOSE_BRACKET COMMA 			{}
 		  | OPEN_BRACKET numbers CLOSE_BRACKET 					{}
-
-numbers: DIGIT COMMA numbers {}
-	   | DIGIT COMMA 		 {}
-	   | DIGIT 				 {}
+		  ;
+		
+numbers: INTEGER COMMA numbers {}
+	   | INTEGER COMMA		   {}
+	   | INTEGER 			   {}
 
 %%
 int main()
