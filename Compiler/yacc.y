@@ -69,6 +69,7 @@ extern int yylex();
 %type <functions_node> functions
 %type <function_node> function main
 %type <type_node> type /*compound_type Ver si va*/
+%type <type_node> matrix_type
 %type <parameters_node> args params
 %type <sentences_node> body sentences
 %type <sentence_node> sentence
