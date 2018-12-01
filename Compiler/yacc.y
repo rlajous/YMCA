@@ -103,17 +103,17 @@ program: defines functions {$$ = new_program_node($1, $2); translateProgramNode(
 	;
 
 defines: define defines {$$ = new_defines_node($1, $2);}
-	| /* lambda */ {$$ = NULL; createFunction();}
+	| /* lambda */ 		{$$ = NULL; createFunction();}
 	;
 
 define: DEFINE NAME BOOLEAN {$$ = new_define_node(DEFINE_INTEGER, $2, $3, NULL);}
-	| DEFINE NAME INTEGER {$$ = new_define_node(DEFINE_INTEGER, $2, $3, NULL);}
-	| DEFINE NAME STRING {$$ = new_define_node(DEFINE_STRING, $2, 0, $3);}
+	| DEFINE NAME INTEGER 	{$$ = new_define_node(DEFINE_INTEGER, $2, $3, NULL);}
+	| DEFINE NAME STRING 	{$$ = new_define_node(DEFINE_STRING, $2, 0, $3);}
 	;
 
 functions: function functions {$$ = new_functions_node($1, $2);}
-	| main {$$ = new_functions_node($1, NULL);}
-	;
+		 | main 			  {$$ = new_functions_node($1, NULL);}
+		 ;
 
 function: type NAME OPEN_PARENTHESES args CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {$$ = new_function_node($1, $2, $4, $7);}
 	;
@@ -126,8 +126,8 @@ matrix_type: MATRIX_TYPE_START LESS_THAN INTEGER_TYPE GREATER_THAN {$$ = new_typ
 
 type: INTEGER_TYPE {$$ = new_type_node(INTEGER_T,NONE);}
 	| BOOLEAN_TYPE {$$ = new_type_node(BOOLEAN_T,NONE);}
-	| STRING_TYPE {$$ = new_type_node(STRING_T,NONE);}
-	| matrix_type {$$ = $1;}
+	| STRING_TYPE  {$$ = new_type_node(STRING_T,NONE);}
+	| matrix_type  {$$ = $1;}
 	;
 
 args: params {$$ = $1;}
@@ -135,24 +135,24 @@ args: params {$$ = $1;}
 	;
 
 params: type NAME COMMA params {$$ = new_parameters_node($1, $2, $4);}
-	| type NAME {$$ = new_parameters_node($1, $2, NULL);}
-	;
+	  | type NAME 			   {$$ = new_parameters_node($1, $2, NULL);}
+	  ;
 
 body: sentences {$$ = $1;}
-	| {$$ = NULL;}
+	| 			{$$ = NULL;}
 	;
 
 sentences: sentence sentences {$$ = new_sentences_node($1, $2);}
-	| sentence {$$ = new_sentences_node($1, NULL); }
+	| sentence 				  {$$ = new_sentences_node($1, NULL); }
 	;
 
 sentence: declaration SEMICOLON {$$ = new_sentence_node(SENTENCE_DECLARATION, $1, NULL, ";", NULL, NULL, NULL, NULL, NULL); }
-	| for {$$ = new_sentence_node(SENTENCE_FOR, NULL, NULL, NULL, $1, NULL, NULL, NULL, NULL); }
-	| while {$$ = new_sentence_node(SENTENCE_WHILE, NULL, NULL, NULL, NULL, $1, NULL, NULL, NULL);}
-	| if {$$ = new_sentence_node(SENTENCE_IF, NULL, NULL, NULL, NULL, NULL, $1, NULL, NULL);}
-	| var_operation SEMICOLON {$$ = new_sentence_node(SENTENCE_VARIABLE, NULL, $1, ";", NULL, NULL, NULL, NULL, NULL); }
-	| func_call SEMICOLON {$$ = new_sentence_node(SENTENCE_FUNCTION, NULL, NULL, ";", NULL, NULL, NULL, $1, NULL);}
-	| return SEMICOLON {$$ = new_sentence_node(SENTENCE_RETURN, NULL, NULL, ";", NULL, NULL, NULL, NULL, $1); }
+	| for 						{$$ = new_sentence_node(SENTENCE_FOR, NULL, NULL, NULL, $1, NULL, NULL, NULL, NULL); }
+	| while 					{$$ = new_sentence_node(SENTENCE_WHILE, NULL, NULL, NULL, NULL, $1, NULL, NULL, NULL);}
+	| if 						{$$ = new_sentence_node(SENTENCE_IF, NULL, NULL, NULL, NULL, NULL, $1, NULL, NULL);}
+	| var_operation SEMICOLON   {$$ = new_sentence_node(SENTENCE_VARIABLE, NULL, $1, ";", NULL, NULL, NULL, NULL, NULL); }
+	| func_call SEMICOLON 		{$$ = new_sentence_node(SENTENCE_FUNCTION, NULL, NULL, ";", NULL, NULL, NULL, $1, NULL);}
+	| return SEMICOLON 			{$$ = new_sentence_node(SENTENCE_RETURN, NULL, NULL, ";", NULL, NULL, NULL, NULL, $1); }
 	;
 
 for: FOR OPEN_PARENTHESES assignment SEMICOLON condition SEMICOLON var_operation CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {$$ = new_for_node(REGULAR_FOR, $3, $5, $7, $10, NULL, NULL);}
@@ -164,83 +164,84 @@ while: WHILE OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body
 if: IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES else {$$ = new_if_node($3, $6, NULL);}
 	;
 
-else: ELSE OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES	{$$ = new_if_node(NULL, $3, NULL); }
+else: ELSE OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES															   {$$ = new_if_node(NULL, $3, NULL); }
 				| ELSE OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES else {$$ = new_if_node($3, $6, $8); }
 				| /* empty */{$$ = NULL;}
 
-declaration: type NAME {$$ = new_declaration_node($1, $2);}
-	| type assignment {}
-	;
+declaration: type NAME 		 {$$ = new_declaration_node($1, $2);}
+		   | type assignment {$$ = new_declaration_node($1, $2);}
+		   ;
 
 var_operation: assignment {$$ = new_variable_operation_node(VARIABLE_ASSIGNMENT, $1, NULL);}
-	| NAME PLUS PLUS {$$ = new_variable_operation_node(VARIABLE_INCREMENT, NULL, $1);}
-	| NAME MINUS MINUS {$$ = new_variable_operation_node(VARIABLE_DECREMENT, NULL, $1);}
+	| NAME PLUS PLUS 	  {$$ = new_variable_operation_node(VARIABLE_INCREMENT, NULL, $1);}
+	| NAME MINUS MINUS 	  {$$ = new_variable_operation_node(VARIABLE_DECREMENT, NULL, $1);}
 	;
 
 func_call: NAME OPEN_PARENTHESES call_args CLOSE_PARENTHESES {$$ = new_function_execute_node($1, $3);}
 	;
 
-call_args: {$$ = NULL; }
-	| call_params {$$ = $1;}
-	;
+call_args: 			   {$$ = NULL; }
+		 | call_params {$$ = $1;}
+		 ;
 
 call_params: call_param COMMA call_params {$$ = new_call_parameters_node($1, $3);}
-	| call_param {$$ = new_call_parameters_node($1, NULL);}
+	| call_param 						  {$$ = new_call_parameters_node($1, NULL);}
 	;	
 
 call_param: expression {$$ = new_call_parameter_node(PARAMETER_EXPRESSION, NULL, $1);}
-	| STRING {$$ = new_call_parameter_node(PARAMERER_STRING, $1, NULL);}
+	| STRING 		   {$$ = new_call_parameter_node(PARAMERER_STRING, $1, NULL);}
 	;
 
 return: RETURN expression {$$ = new_return_node(RETURN_EXPRESSION, NULL, $2);}
 	;
 
-condition: BOOLEAN {}
-	| OPEN_PARENTHESES condition CLOSE_PARENTHESES {$$ = new_condition_node(CONDITION_PARENTHESES, NULL, NULL, NULL, $2);}
-	| expression EQUAL EQUAL expression {}
-	| expression NOT_EQUAL expression {}
-	| expression GREATER_THAN expression {}
-	| expression LESS_THAN expression {}
-	| expression GREATER_OR_EQUAL expression {}
-	| expression LESS_OR_EQUAL expression {}
-	| condition OR condition {}
-	| condition AND condition {}
-	;
+condition: BOOLEAN 										{}
+		 | OPEN_PARENTHESES condition CLOSE_PARENTHESES {$$ = new_condition_node(CONDITION_PARENTHESES, NULL, NULL, NULL, $2);}
+		 | expression EQUAL EQUAL expression 			{}
+		 | expression NOT_EQUAL expression 				{}
+		 | expression GREATER_THAN expression 			{}
+		 | expression LESS_THAN expression 				{}
+		 | expression GREATER_OR_EQUAL expression 		{}
+		 | expression LESS_OR_EQUAL expression 			{}
+		 | condition OR condition 						{}
+		 | condition AND condition 						{}
+		 ;
 	
 	
 assignment: NAME assign_operation expression {$$ = new_assignment_node(ASSIGNMENT_EXPRESSION, $1, NULL, NULL, $2, $3);}
-		  | NAME EQUAL STRING {$$ = new_assignment_node(ASSIGNMENT_STRING, $1, $3, NULL, NULL, NULL);}
+		  | NAME EQUAL STRING 				 {$$ = new_assignment_node(ASSIGNMENT_STRING, $1, $3, NULL, NULL, NULL);}
 		  ;
 
-assign_operation: EQUAL {$$ = "=";}
-				| PLUS EQUAL {$$ = "+=";}
-				| MINUS EQUAL {$$ = "-="; }
+assign_operation: EQUAL 		 {$$ = "=";}
+				| PLUS EQUAL 	 {$$ = "+=";}
+				| MINUS EQUAL	 {$$ = "-=";}
 				| MULTIPLY EQUAL {$$ = "*=";}
-				| DIVIDE EQUAL {$$ = "/=";}
+				| DIVIDE EQUAL   {$$ = "/=";}
 	
-expression: BOOLEAN {$$ = new_expression_node(BOOLEAN, NULL, 0, NULL, NULL, $1, NULL); }
-		 | NAME {$$ = new_expression_node(EXPRESSION_VARIABLE, NULL, 0,  NULL, NULL, 0, $1); }
-		 | INTEGER {$$ = new_expression_node(EXPRESSION_INTEGER, NULL, 0, NULL, NULL, $1, NULL); }
+expression: BOOLEAN 					  {$$ = new_expression_node(BOOLEAN, NULL, 0, NULL, NULL, $1, NULL); }
+		 | NAME 						  {$$ = new_expression_node(EXPRESSION_VARIABLE, NULL, 0,  NULL, NULL, 0, $1); }
+		 | INTEGER 						  {$$ = new_expression_node(EXPRESSION_INTEGER, NULL, 0, NULL, NULL, $1, NULL); }
 		 | matrix {/* no se si esta bien meter matrix aca 
 		 			  porque por ej: ¿se puede hacer 
 					  if(m == {{1,2,3},{4,5,6},{7,8,9}})??? */}
-		 | func_call {$$ = new_expression_node(EXPRESSION_FUNCTION, NULL, 0, NULL, $1, 0, NULL); }
-		 | expression PLUS expression {$$ = new_expression_node(EXPRESSION_OPERATION, $1, '+', $3, NULL, 0, NULL); }
-		 | expression MINUS expression {$$ = new_expression_node(EXPRESSION_OPERATION, $1, '-', $3, NULL, 0, NULL); }
-		 | expression MOD expression {$$ = new_expression_node(EXPRESSION_OPERATION, $1, '%', $3, NULL, 0, NULL); }
-		 | expression DIVIDE expression {$$ = new_expression_node(EXPRESSION_OPERATION, $1, '/', $3, NULL, 0, NULL); }
+		 | func_call 					  {$$ = new_expression_node(EXPRESSION_FUNCTION, NULL, 0, NULL, $1, 0, NULL); }
+		 | expression PLUS expression 	  {$$ = new_expression_node(EXPRESSION_OPERATION, $1, '+', $3, NULL, 0, NULL); }
+		 | expression MINUS expression	  {$$ = new_expression_node(EXPRESSION_OPERATION, $1, '-', $3, NULL, 0, NULL); }
+		 | expression MOD expression	  {$$ = new_expression_node(EXPRESSION_OPERATION, $1, '%', $3, NULL, 0, NULL); }
+		 | expression DIVIDE expression   {$$ = new_expression_node(EXPRESSION_OPERATION, $1, '/', $3, NULL, 0, NULL); }
 		 | expression MULTIPLY expression {$$ = new_expression_node(EXPRESSION_OPERATION, $1, '*', $3, NULL, 0, NULL); }
 		 ;
 
 matrix: OPEN_BRACKET sub_matrix CLOSE_BRACKET {}
 	  | OPEN_BRACKET numbers    CLOSE_BRACKET {}
+
 sub_matrix: OPEN_BRACKET numbers CLOSE_BRACKET COMMA sub_matrix {}
-		  | OPEN_BRACKET numbers CLOSE_BRACKET COMMA {}
-		  | OPEN_BRACKET numbers CLOSE_BRACKET {}
+		  | OPEN_BRACKET numbers CLOSE_BRACKET COMMA 			{}
+		  | OPEN_BRACKET numbers CLOSE_BRACKET 					{}
 
 numbers: DIGIT COMMA numbers {}
-	   | DIGIT COMMA {}
-	   | DIGIT {}
+	   | DIGIT COMMA 		 {}
+	   | DIGIT 				 {}
 
 %%
 int main()
