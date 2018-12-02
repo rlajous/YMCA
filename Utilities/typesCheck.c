@@ -19,7 +19,7 @@ int functionExists(char * name) {
 functionNode * createFunction() {
   functionNode * function = malloc(sizeof(functionNode));
 	function->basic = INTEGER_T;
-  function->compound = INTEGER_T;
+  function->compound = NONE;
 	function->arguments = NULL;
 	function->variables = NULL;
   current = function;
@@ -72,7 +72,7 @@ int addParameterToFunction(char * name, basicTypes basic, compoundTypes compound
 
 void addToDefines(char * name, basicTypes basic) {
   variableList * node = malloc(sizeof(variableList));
-  node->variable = createVariable(name, basic, basic);
+  node->variable = createVariable(name, basic, NONE);
   node->next = defines;
   defines = node;
 }
@@ -84,6 +84,7 @@ int existsDefine(char * name) {
   variableNode * ret = getVariableFromList(name, defines);
   if(ret != NULL)
     return 1;
+  return 0;
 }
 
 variableNode * createVariable(char * name, basicTypes basic, compoundTypes compound) {
