@@ -1,10 +1,11 @@
 //While example
 
 int main(){
-    int i = 0;
+    int i;
+    i = 0;
 
     while(i<10){
-        printf("Imprimiendo el numero %d", i);
+        printf("Imprimiendo el numero %d\n", i);
         i+=1;
     }
 }

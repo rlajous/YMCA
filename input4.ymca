@@ -1,0 +1,7 @@
+#define ALGO 2
+
+int main() {
+    int a;
+    a = 3 + ALGO;
+    printf("El numero es %d\n", a);
+}

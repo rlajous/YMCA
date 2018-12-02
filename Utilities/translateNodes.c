@@ -279,7 +279,7 @@ void translateOperation(expression_node *expression)
         error(INCOMPATIBLE);
       }
     }
-    else if (var->compound == MATRIX_T && var2->compound == INTEGER_T)
+    else if (var->compound == MATRIX_T && var2->basic == INTEGER_T)
     {
       if (expression->op == '*')
       {
@@ -287,7 +287,7 @@ void translateOperation(expression_node *expression)
         return;
       }
     }
-    else if (var->compound == INTEGER_T && var2->compound == MATRIX_T)
+    else if (var->basic == INTEGER_T && var2->compound == MATRIX_T)
     {
       if (expression->op == '*')
       {
@@ -295,7 +295,18 @@ void translateOperation(expression_node *expression)
         return;
       }
     }
+  } else if (expression->expression_2->production == EXPRESSION_VARIABLE){
+    variableNode *var = getVariable(expression->expression_2->name, funCurrent);
+    if(var->compound == MATRIX_T && expression->expression_1->production == EXPRESSION_INTEGER){
+      if (expression->op == '*')
+      {
+        fprintf(file, "multMatrixEsc(%s, %d)", expression->expression_2->name, expression->expression_1->boolean_number);
+        return;
+      }
+    }
+
   }
+
     translateExpression(expression->expression_1);
     fprintf(file, " %c ", expression->op);
     translateExpression(expression->expression_2);

@@ -1,0 +1,18 @@
+#define ALGO 2
+
+int main() {
+    matrix m;
+    matrix n;
+    int a;
+    a = 4;
+    m = {{1,2,3},{2,3,4},{3,4,5}};
+    n = {{2,2,2},{1,1,1},{2,2,2}};
+    printf("matriz m: %m", m);
+    printf("matriz n: %m", n);
+    printf("suma de m y n: %m", m + n);
+    printf("resta de m y n: %m", m - n);
+    printf("multipicacion de m y n: %m", m * n);
+    printf("multipicacion escalar (2): %m", 2*m);
+    printf("%d\n", 2 + 3);
+    printf("%d\n", 2 + a);
+}
