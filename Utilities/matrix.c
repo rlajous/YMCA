@@ -74,9 +74,9 @@ matrix sumMatrix( matrix a, matrix b) {
 	matrix mat;
 	
 	if(a->type >= b->type){
-		mat = createMatrix(a->width, a->height, a->type);
+		mat = createMatrix(a->height, a->width, a->type);
 	}else{
-		mat = createMatrix(a->width, a->height, b->type);
+		mat = createMatrix(a->height, a->width, b->type);
 	}
 
 	int * m = a->mtrx;
@@ -85,7 +85,8 @@ matrix sumMatrix( matrix a, matrix b) {
 
 	for(i = 0; i < a->width; i++) {
 		for(k = 0; k < a->height; k++) {
-			addValue(i, k,  m[k*a->width + i] + n[k*b->width + i], mat);
+
+			addValue(k, i,  m[k*a->width + i] + n[k*b->width + i], mat);
 		}
 	}
 
@@ -106,18 +107,17 @@ matrix subMatrix( matrix a, matrix b) {
 	matrix mat;
 	
 	if(a->type >= b->type){
-		mat = createMatrix(a->width, a->height, a->type);
+		mat = createMatrix(a->height, a->width, a->type);
 	}else{
-		mat = createMatrix(a->width, a->height, b->type);
+		mat = createMatrix(a->height, a->width, a->type);
 	}
-
 	int * m = a->mtrx;
 	int * n = b->mtrx;
 
 
 	for(i = 0; i < a->width; i++) {
 		for(k = 0; k < a->height; k++) {
-			addValue(i, k,  m[k*a->width + i] - n[k*b->width + i], mat);
+			addValue(k, i,  m[k*a->width + i] - n[k*b->width + i], mat);
 		}
 	}
 
@@ -135,7 +135,7 @@ matrix multMatrixEsc( matrix a, double e) {
 	int i,k;
 	matrix mat;
 	
-	mat = createMatrix(a->width, a->height, a->type);
+	mat = createMatrix(a->height, a->width, a->type);
 	
 
 	int * m = a->mtrx;
@@ -143,7 +143,7 @@ matrix multMatrixEsc( matrix a, double e) {
 
 	for(i = 0; i < a->width; i++) {
 		for(k = 0; k < a->height; k++) {
-			addValue(i, k,  m[k*a->width + i] * e, mat);
+			addValue(k, i,  m[k*a->width + i] * e, mat);
 		}
 	}
 
@@ -166,10 +166,11 @@ matrix mulMatrix( matrix a, matrix b) {
 	matrix mat;
 	
 	if(a->type >= b->type){
-		mat = createMatrix(a->width, a->height, a->type);
+		mat = createMatrix(a->height, a->width, a->type);
 	}else{
-		mat = createMatrix(a->width, a->height, b->type);
+		mat = createMatrix(a->height, a->width, b->type);
 	}
+
 
 	int * m = a->mtrx;
 	int * n = b->mtrx;
