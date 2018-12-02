@@ -1,0 +1,23 @@
+#define ALGO 2
+
+int printer(int a){
+    printf("%d\n", a);
+    return 0;
+}
+int mult(int a, int b){
+    return a * b;
+}
+int main() {
+    int x;
+    int y;
+    int z;
+    y = 2;
+    x = 3;
+    z = mult(x, y);
+    printer(z);
+    /*
+        Esto es un comentario
+        printf("no imprimo");
+        termina el comentario
+    */
+}

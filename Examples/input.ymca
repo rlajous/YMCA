@@ -1,7 +1,5 @@
 #define ALGO 2
 
-//no andan expresiones ni decl+asign ni if-else
-
 int main() {
     int i;
     i = 101 % 2;

@@ -1,9 +1,0 @@
-#define ALGO 2
-
-int main() {
-    string s = "";
-    /*
-        Comento las lineas para evitar que no compile por falta de var m
-        printf("asd %m %s hcgxz", m, "asd");
-    */
-}
