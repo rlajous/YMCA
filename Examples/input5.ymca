@@ -13,6 +13,7 @@ int main() {
     printf("resta de m y n: %m", m - n);
     printf("multipicacion de m y n: %m", m * n);
     printf("multipicacion escalar (2): %m", 2*m);
-    printf("%d\n", 2 + 3);
-    printf("%d\n", 2 + a);
+    printf("multipicacion dos escalares (2 y 3): %d\n", 2 * 3);
+    printf("variable a: %d\n", a);
+    printf("multipicacion de escalar y variable (2 y a): %d\n", 2 * a);
 }
