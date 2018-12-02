@@ -1,7 +1,18 @@
 #define ALGO 2
 
+//no andan expresiones ni decl+asign ni if-else
+
 int main() {
-    matrix m;
-    m = {{1,2,3},{4,5,6}};
-    printf("asd %m %s hcgxz", m, "asd");
+    int i;
+    i = 101 % 2;
+    if(11 == 10+1) {
+        printf("1\n");
+    } else(false){
+        printf("2\n");
+    } else(false) {
+        printf("3\n");
+    } else {
+        printf("4\n");
+    }
+    printf("%d\n",i);
 }

@@ -206,9 +206,11 @@ void translateElse(if_node *elseNode)
   else
   {
     translateSentences(elseNode->sentences);
+    if(elseNode->else_branch != NULL) {
+      error(NOT_VALID_OPERATION); //no podes tener un else sin condicion y otro else abajo 
+    }
   }
   fprintf(file, "}\n");
-  translateElse(elseNode->else_branch);
 }
 
 void translateCondition(condition_node *condition)
@@ -293,10 +295,10 @@ void translateOperation(expression_node *expression)
         return;
       }
     }
+  }
     translateExpression(expression->expression_1);
     fprintf(file, " %c ", expression->op);
     translateExpression(expression->expression_2);
-  }
 }
 
 void translateExpressionFunctionCall(function_execute_node *function)

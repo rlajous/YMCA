@@ -136,7 +136,7 @@ type: INTEGER_TYPE {$$ = new_type_node(INTEGER_T,NONE);}
 	;
 
 args: params {$$ = $1;}
-	| {$$ = NULL;}
+	| 		 {$$ = NULL;}
 	;
 
 params: type NAME COMMA params {$$ = new_parameters_node($1, $2, $4);}
@@ -166,16 +166,16 @@ for: FOR OPEN_PARENTHESES assignment SEMICOLON condition SEMICOLON var_operation
 while: WHILE OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES {$$ = new_while_node($3, $6);}
 	;
 	
-if: IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES else {$$ = new_if_node($3, $6, NULL);}
+if: IF OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES else {$$ = new_if_node($3, $6, $8);}
 	;
 
-else: ELSE OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES															   {$$ = new_if_node(NULL, $3, NULL); }
-				| ELSE OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES else {$$ = new_if_node($3, $6, $8); }
-				| /* empty */{$$ = NULL;}
-				;
+else: ELSE OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES												   {$$ = new_if_node(NULL, $3, NULL); }
+	| ELSE OPEN_PARENTHESES condition CLOSE_PARENTHESES OPEN_CURLY_BRACES body CLOSE_CURLY_BRACES else {$$ = new_if_node($3, $6, $8); }
+	| /* empty */																					   {$$ = NULL;}
+	;
 
 declaration: 	type NAME 		 {$$ = new_declaration_node($1, $2);}
-			|	type NAME assign_operation expression	{$$ = new_declaration_node($1, $2); new_assignment_node(ASSIGNMENT_EXPRESSION, $2, NULL, NULL, $3, $4); }
+		   |	type NAME assign_operation expression	{$$ = new_declaration_node($1, $2); new_assignment_node(ASSIGNMENT_EXPRESSION, $2, NULL, NULL, $3, $4); }
 		   ;
 
 var_operation: assignment {$$ = new_variable_operation_node(VARIABLE_ASSIGNMENT, $1, NULL);}
