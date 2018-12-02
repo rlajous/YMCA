@@ -450,6 +450,7 @@ int translateCallPrintfParameters(call_parameters_node *parameters)
         translateExpression(next->parameter->expression);
       }
       fprintf(file, ");\n");
+      
       next = next->next;
     } else {
       fprintf(file, "printf(\"");
@@ -470,7 +471,7 @@ int translateCallPrintfParameters(call_parameters_node *parameters)
     fprintf(file, "%s", strPieces[i]);
     fprintf(file, "\");\n");
   }
-  fprintf(file, "printf(\"\\n\");\n");
+ 
   return i;
 }
 

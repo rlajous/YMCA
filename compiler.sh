@@ -4,7 +4,7 @@ if [[ $1 == *.ymca ]] ; then
     gcc -o executable ./Compiler/compiled.c ./Utilities/matrix.c;
     echo "You can now run ./executable"; #TODO: esto les parece bueno o es muy verboso?
   fi
-  rm ./Compiler/compiled.c;
+#  rm ./Compiler/compiled.c;
 else
   echo "File must have a .ymca extension";
 fi
